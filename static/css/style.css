@@ -230,7 +230,9 @@ textarea {
 .product-card__image {
     width: 100%;
     height: 380px;
-    object-fit: cover;
+    padding: 28px;
+    object-fit: contain;
+    background: #f4f3ef;
     transition: transform 600ms ease;
 }
 
@@ -400,6 +402,10 @@ textarea {
 ================================ */
 
 @media (max-width: 768px) {
+    
+    .product-card__image {
+    padding: 20px;
+}
     .shop-page {
         padding: 80px 22px;
     }
