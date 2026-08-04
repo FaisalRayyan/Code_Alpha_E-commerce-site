@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Shop Joggers | ShopSphere
+{% endblock %}
+
+{% block content %}
+    <section class="shop-page">
+        <header class="shop-header">
+            <p class="shop-header__eyebrow">
+                ShopSphere Collection
+            </p>
+
+            <h1 class="shop-header__title">
+                Built for every move.
+            </h1>
+
+            <p class="shop-header__description">
+                Explore premium joggers designed for performance,
+                comfort, and everyday movement.
+            </p>
+        </header>
+
+        <div class="product-grid">
+            {% for product in products %}
+                <article class="product-card">
+                    <div class="product-card__media">
+                        {% if product.main_image %}
+                            <img
+                                src="{{ product.main_image.url }}"
+                                alt="{{ product.name }}"
+                                class="product-card__image"
+                            >
+                        {% else %}
+                            <div class="product-card__placeholder">
+                                Product image coming soon
+                            </div>
+                        {% endif %}
+
+                        {% if product.is_new_arrival %}
+                            <span class="product-card__badge">
+                                New Arrival
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="product-card__content">
+                        <p class="product-card__category">
+                            {{ product.category.name }}
+                        </p>
+
+                        <h2 class="product-card__name">
+                            {{ product.name }}
+                        </h2>
+
+                        <p class="product-card__description">
+                            {{ product.short_description }}
+                        </p>
+
+                        <div class="product-card__sizes">
+                            <span>Available sizes:</span>
+
+                            {% for variant in product.variants.all %}
+                                <span class="product-card__size">
+                                    {{ variant.size }}
+                                </span>
+                            {% empty %}
+                                <span>No variants added</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="product-card__footer">
+                            <div class="product-card__price">
+                                {% if product.discount_price %}
+                                    <span class="product-card__old-price">
+                                        Rs. {{ product.price }}
+                                    </span>
+                                {% endif %}
+
+                                <strong>
+                                    Rs. {{ product.selling_price }}
+                                </strong>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="product-card__button"
+                            >
+                                View Product
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-products">
+                    No active products are currently available.
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
