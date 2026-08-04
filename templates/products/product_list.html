@@ -82,12 +82,12 @@
                                 </strong>
                             </div>
 
-                            <button
-                                type="button"
-                                class="product-card__button"
-                            >
+                            <a
+                                href="{% url 'products:product_detail' product.slug %}"
+                                 class="product-card__button"
+>
                                 View Product
-                            </button>
+                           </a>
                         </div>
                     </div>
                 </article>
