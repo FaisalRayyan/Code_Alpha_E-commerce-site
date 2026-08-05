@@ -78,3 +78,38 @@ Django admin panel.
 The next phase will implement the real shopping cart backend,
 session-based cart storage, stock validation, cart totals,
 and cart management.
+## Day 3 — Shopping Cart Backend
+
+**Date:** 5 August 2026
+
+### Work Completed
+
+- Created Cart and CartItem database models
+- Added separate carts for authenticated users and guest sessions
+- Implemented product variant and stock validation
+- Created a real Add to Cart backend
+- Prevented duplicate variant rows inside the same cart
+- Added quantity accumulation for existing cart items
+- Customized cart monitoring in Django Admin
+- Created a responsive customer-facing Cart page
+- Added quantity increase and decrease controls
+- Added remove-item functionality
+- Calculated line totals, cart subtotal, and total item quantity
+- Added a global live cart counter
+- Verified separate authenticated and Incognito guest carts
+
+### What I Learned
+
+- How Django sessions identify anonymous visitors
+- How authenticated and guest carts can be stored separately
+- How database constraints prevent duplicate cart items
+- How backend stock validation protects inventory
+- How POST requests update and remove cart items
+- How Django context processors provide cart data globally
+- How cart totals can be calculated dynamically from database records
+
+### Next Step
+
+The next phase will focus on user authentication, registration,
+login, customer profiles, and connecting guest carts with
+authenticated customer accounts.
