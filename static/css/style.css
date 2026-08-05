@@ -802,4 +802,111 @@ textarea {
         grid-template-columns: 1fr;
     }
 }
+/* ================================
+   SITE MESSAGES
+================================ */
+
+.site-messages {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    z-index: 9999;
+    width: min(520px, calc(100% - 32px));
+    transform: translateX(-50%);
+}
+
+.site-message {
+    padding: 16px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    background: rgba(18, 21, 28, 0.96);
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    font-size: 14px;
+    backdrop-filter: blur(20px);
+}
+
+.site-message--success {
+    border-color: rgba(66, 217, 139, 0.55);
+}
+
+.site-message--error {
+    border-color: rgba(255, 93, 108, 0.65);
+}
+/* ================================
+   GLOBAL SITE HEADER
+================================ */
+
+.site-header {
+    position: relative;
+    z-index: 1000;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 0 6vw;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(7, 8, 11, 0.88);
+    backdrop-filter: blur(22px);
+}
+
+.site-header__brand {
+    color: #ffffff;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-decoration: none;
+}
+
+.site-header__navigation {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.site-header__navigation > a {
+    color: #a8acb7;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 200ms ease;
+}
+
+.site-header__navigation > a:hover {
+    color: #ffffff;
+}
+
+.site-header__cart {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.site-header__cart span {
+    min-width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #4169ff;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+@media (max-width: 600px) {
+    .site-header {
+        min-height: 68px;
+        padding: 0 20px;
+    }
+
+    .site-header__navigation {
+        gap: 16px;
+    }
+
+    .site-header__navigation > a:first-child {
+        display: none;
+    }
+}
+
 }

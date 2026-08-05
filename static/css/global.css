@@ -1,0 +1,134 @@
+/* =====================================
+   GLOBAL NAVIGATION
+===================================== */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 0 6vw;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(7, 8, 11, 0.86);
+    box-shadow: 0 14px 45px rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(22px);
+}
+
+.site-header__brand {
+    color: #ffffff;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-decoration: none;
+}
+
+.site-header__navigation {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.site-header__navigation > a {
+    color: #a8acb7;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 200ms ease;
+}
+
+.site-header__navigation > a:hover {
+    color: #ffffff;
+}
+
+.site-header__cart {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.site-header__cart span {
+    min-width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #4169ff;
+    box-shadow: 0 8px 24px rgba(65, 105, 255, 0.35);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* =====================================
+   SUCCESS AND ERROR MESSAGES
+===================================== */
+
+.site-messages {
+    position: fixed;
+    top: 94px;
+    left: 50%;
+    z-index: 9999;
+    width: min(560px, calc(100% - 32px));
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.site-message {
+    padding: 17px 21px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 17px;
+    background: rgba(17, 20, 27, 0.96);
+    box-shadow: 0 20px 65px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.5;
+    backdrop-filter: blur(22px);
+    animation: messageReveal 350ms ease both;
+}
+
+.site-message--success {
+    border-color: rgba(66, 217, 139, 0.65);
+}
+
+.site-message--error {
+    border-color: rgba(255, 93, 108, 0.72);
+}
+
+@keyframes messageReveal {
+    from {
+        opacity: 0;
+        transform: translateY(-14px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 650px) {
+    .site-header {
+        min-height: 68px;
+        padding: 0 20px;
+    }
+
+    .site-header__brand {
+        font-size: 20px;
+    }
+
+    .site-header__navigation {
+        gap: 15px;
+    }
+
+    .site-header__navigation > a:first-child {
+        display: none;
+    }
+
+    .site-messages {
+        top: 82px;
+    }
+}

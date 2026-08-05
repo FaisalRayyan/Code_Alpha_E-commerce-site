@@ -124,12 +124,14 @@
                         {% for variant in product.variants.all %}
                             {% if variant.is_active %}
                                 <button
-                                    type="button"
-                                    class="product-option__size"
-                                    data-size="{{ variant.size }}"
-                                    data-stock="{{ variant.stock }}"
-                                    data-color="{{ variant.color_name }}"
-                                >
+                                       type="button"
+                                         class="product-option__size"
+                                          data-variant-id="{{ variant.id }}"
+                                        data-size="{{ variant.size }}"
+                                        data-stock="{{ variant.stock }}"
+                                         data-color="{{ variant.color_name }}"
+                                         {% if variant.stock < 1 %}disabled{% endif %}
+                                    >
                                     {{ variant.size }}
                                 </button>
                             {% endif %}
@@ -157,50 +159,67 @@
                     </div>
                 </div>
 
-                <div class="product-purchase">
-                    <div class="quantity-control">
-                        <button
-                            type="button"
-                            id="decreaseQuantity"
-                            aria-label="Decrease quantity"
-                        >
-                            −
-                        </button>
+                <form
+                      method="post"
+                      action="{% url 'cart:add_to_cart' product.id %}"
+                      class="product-purchase-form"
+                     id="addToCartForm"
+                   >
+                    {% csrf_token %}
 
-                        <input
-                            id="productQuantity"
-                            type="number"
-                            value="1"
-                            min="1"
-                            max="{{ product.stock }}"
-                            readonly
-                        >
+                  <input
+                      type="hidden"
+                      name="variant_id"
+                      id="selectedVariantId"
+                      value=""
+                  >
+
+                 <div class="product-purchase">
+                     <div class="quantity-control">
+                         <button
+                             type="button"
+                             id="decreaseQuantity"
+                             aria-label="Decrease quantity"             
+                         >
+                             −
+                         </button>
+             
+                         <input
+                             id="productQuantity"
+                             name="quantity"
+                             type="number"
+                             value="1"
+                             min="1"
+                             max="{{ product.stock }}"
+                             readonly
+                         >
+
+                            <button
+                                type="button"
+                                id="increaseQuantity"
+                                aria-label="Increase quantity"
+                            >
+                                +
+                            </button>
+                        </div>
 
                         <button
-                            type="button"
-                            id="increaseQuantity"
-                            aria-label="Increase quantity"
+                            type="submit"
+                            class="product-purchase__button"
+                            id="addToCartButton"
+                            {% if not product.is_in_stock %}disabled{% endif %}
                         >
-                            +
+                            Add to Cart
                         </button>
                     </div>
 
-                    <button
-                        type="button"
-                        class="product-purchase__button"
-                        id="addToCartButton"
-                        {% if not product.is_in_stock %}disabled{% endif %}
+                   <p
+                        class="product-selection-message"
+                        id="productSelectionMessage"
                     >
-                        Add to Cart
-                    </button>
-                </div>
-
-                <p
-                    class="product-selection-message"
-                    id="productSelectionMessage"
-                >
-                    Select a size before adding this product to your cart.
-                </p>
+                        Select a size before adding this product to your cart.
+                    </p>
+                </form>
 
                 <div class="product-description">
                     <h2>Product details</h2>

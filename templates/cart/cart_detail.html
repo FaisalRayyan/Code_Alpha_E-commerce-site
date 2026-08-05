@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Your Cart | ShopSphere
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/cart.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+    <section class="cart-page">
+        <header class="cart-header">
+            <div>
+                <p class="cart-header__eyebrow">
+                    Your Selection
+                </p>
+
+                <h1 class="cart-header__title">
+                    Shopping Cart
+                </h1>
+            </div>
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="cart-header__shop-link"
+            >
+                Continue Shopping
+                <span aria-hidden="true">→</span>
+            </a>
+        </header>
+
+        {% if cart_items %}
+            <div class="cart-layout">
+                <div class="cart-items">
+                    {% for item in cart_items %}
+                        <article class="cart-item">
+                            <a
+                                href="{% url 'products:product_detail' item.product.slug %}"
+                                class="cart-item__media"
+                            >
+                                {% if item.product.main_image %}
+                                    <img
+                                        src="{{ item.product.main_image.url }}"
+                                        alt="{{ item.product.name }}"
+                                    >
+                                {% else %}
+                                    <span>
+                                        Product Image
+                                    </span>
+                                {% endif %}
+                            </a>
+
+                            <div class="cart-item__information">
+                                <div class="cart-item__top">
+                                    <div>
+                                        <p class="cart-item__category">
+                                            {{ item.product.category.name }}
+                                        </p>
+
+                                        <h2 class="cart-item__name">
+                                            <a
+                                                href="{% url 'products:product_detail' item.product.slug %}"
+                                            >
+                                                {{ item.product.name }}
+                                            </a>
+                                        </h2>
+                                    </div>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'cart:remove_cart_item' item.id %}"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="cart-item__remove"
+                                            aria-label="Remove {{ item.product.name }}"
+                                        >
+                                            Remove
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="cart-item__variant">
+                                    <span>
+                                        Size
+                                        <strong>{{ item.variant.size }}</strong>
+                                    </span>
+
+                                    <span>
+                                        Color
+                                        <strong>
+                                            {{ item.variant.color_name }}
+                                        </strong>
+                                    </span>
+
+                                    <span
+                                        class="cart-item__color"
+                                        style="--item-color: {{ item.variant.color_hex|default:'#111111' }};"
+                                        title="{{ item.variant.color_name }}"
+                                    ></span>
+                                </div>
+
+                                <div class="cart-item__bottom">
+                                    <div class="cart-quantity">
+                                        <form
+                                            method="post"
+                                            action="{% url 'cart:update_cart_item' item.id %}"
+                                        >
+                                            {% csrf_token %}
+
+                                            <input
+                                                type="hidden"
+                                                name="action"
+                                                value="decrease"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                aria-label="Decrease quantity"
+                                            >
+                                                −
+                                            </button>
+                                        </form>
+
+                                        <span>
+                                            {{ item.quantity }}
+                                        </span>
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'cart:update_cart_item' item.id %}"
+                                        >
+                                            {% csrf_token %}
+
+                                            <input
+                                                type="hidden"
+                                                name="action"
+                                                value="increase"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                aria-label="Increase quantity"
+                                                {% if item.quantity >= item.variant.stock %}
+                                                    disabled
+                                                {% endif %}
+                                            >
+                                                +
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div class="cart-item__pricing">
+                                        <span>
+                                            Rs. {{ item.unit_price }}
+                                            each
+                                        </span>
+
+                                        <strong>
+                                            Rs. {{ item.line_total }}
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <p class="cart-item__stock">
+                                    {{ item.variant.stock }} available
+                                    for this size and color
+                                </p>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+
+                <aside class="cart-summary">
+                    <p class="cart-summary__eyebrow">
+                        Order Summary
+                    </p>
+
+                    <h2>
+                        Review your order
+                    </h2>
+
+                    <div class="cart-summary__rows">
+                        <div>
+                            <span>
+                                Items
+                            </span>
+
+                            <strong>
+                                {{ cart.total_items }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <strong>
+                                Rs. {{ cart.subtotal }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>
+                                Shipping
+                            </span>
+
+                            <strong>
+                                Calculated at checkout
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="cart-summary__total">
+                        <span>
+                            Estimated total
+                        </span>
+
+                        <strong>
+                            Rs. {{ cart.subtotal }}
+                        </strong>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="cart-summary__checkout"
+                        disabled
+                    >
+                        Continue to Checkout
+                    </button>
+
+                    <p class="cart-summary__note">
+                        Checkout and order processing will be
+                        activated in the upcoming development phase.
+                    </p>
+
+                    <div class="cart-summary__benefits">
+                        <div>
+                            <strong>Secure checkout</strong>
+                            <span>Protected ordering process</span>
+                        </div>
+
+                        <div>
+                            <strong>Stock protected</strong>
+                            <span>Quantity validated by variant</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        {% else %}
+            <div class="empty-cart">
+                <span class="empty-cart__number">
+                    00
+                </span>
+
+                <p class="empty-cart__eyebrow">
+                    Nothing here yet
+                </p>
+
+                <h2>
+                    Your cart is ready for something exceptional.
+                </h2>
+
+                <p>
+                    Explore ShopSphere's premium joggers and
+                    select the pair built for your next move.
+                </p>
+
+                <a href="{% url 'products:product_list' %}">
+                    Explore Collection
+                </a>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

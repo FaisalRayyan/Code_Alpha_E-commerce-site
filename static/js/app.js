@@ -10,6 +10,11 @@ if (exploreButton) {
 
 console.log("ShopSphere frontend initialized.");
 
+
+/* ==================================
+   PRODUCT DETAILS PAGE
+================================== */
+
 const sizeButtons = document.querySelectorAll(
     ".product-option__size"
 );
@@ -17,6 +22,18 @@ const sizeButtons = document.querySelectorAll(
 const quantityInput = document.querySelector(
     "#productQuantity"
 );
+
+/* YAHAN NAYA CODE ADD KARNA HAI */
+
+const selectedVariantInput = document.querySelector(
+    "#selectedVariantId"
+);
+
+const addToCartForm = document.querySelector(
+    "#addToCartForm"
+);
+
+/* NAYA CODE YAHAN END HUA */
 
 const decreaseQuantityButton = document.querySelector(
     "#decreaseQuantity"
@@ -42,6 +59,11 @@ sizeButtons.forEach((button) => {
         button.classList.add("is-selected");
 
         selectedSize = button.dataset.size;
+
+        if (selectedVariantInput) {
+            selectedVariantInput.value = button.dataset.variantId;
+        }
+
         selectedVariantStock = Number(button.dataset.stock);
 
         if (quantityInput) {
@@ -102,3 +124,19 @@ galleryThumbnails.forEach((thumbnail) => {
         thumbnail.classList.add("is-active");
     });
 });
+
+if (addToCartForm) {
+    addToCartForm.addEventListener("submit", (event) => {
+        if (
+            !selectedVariantInput
+            || !selectedVariantInput.value
+        ) {
+            event.preventDefault();
+
+            if (selectionMessage) {
+                selectionMessage.textContent =
+                    "Please select a size before adding to cart.";
+            }
+        }
+    });
+}
