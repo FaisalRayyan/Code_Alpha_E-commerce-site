@@ -113,3 +113,41 @@ and cart management.
 The next phase will focus on user authentication, registration,
 login, customer profiles, and connecting guest carts with
 authenticated customer accounts.
+## Day 4 — Customer Authentication and Profile Management
+
+**Date:** 6 August 2026
+
+### Work Completed
+
+- Created the CustomerProfile database model
+- Added automatic profile creation for new users
+- Created a secure customer registration system
+- Added duplicate email and phone-number validation
+- Implemented customer login and logout
+- Added separate authenticated navigation states
+- Implemented guest-cart merging after customer login
+- Created a protected customer profile page
+- Added profile and shipping-address editing
+- Added dynamic cart information to the customer profile
+- Implemented secure password changing
+- Preserved the authenticated session after password updates
+- Added password show and hide controls
+- Tested old-password rejection and new-password login
+- Improved navigation and authentication interface styling
+
+### What I Learned
+
+- How Django authentication securely stores passwords
+- How login and logout sessions work
+- How login-required views protect customer pages
+- How guest carts can merge into customer carts
+- How one-to-one profiles extend Django users
+- How multiple forms can update related database records
+- How Django password validation and session authentication work
+- How password visibility controls improve user experience
+
+### Next Step
+
+The next phase will focus on checkout, shipping information,
+order database models, order placement, stock deduction,
+order history, and admin order-status management.
