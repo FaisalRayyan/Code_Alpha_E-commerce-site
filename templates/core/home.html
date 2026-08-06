@@ -1,31 +1,451 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
-    ShopSphere | Move Different
+    ShopSphere | Move Without Limits
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/home-premium.css' %}"
+    >
 {% endblock %}
 
 {% block content %}
-    <section class="hero">
-        <div class="hero__content">
-            <p class="hero__label">
-                CodeAlpha Full Stack Development
-            </p>
+    <div class="premium-home">
 
-            <h1 class="hero__title">
-                ShopSphere
-            </h1>
+        <!-- ==================================
+             SCENE 00 — BRAND LOADER
+        =================================== -->
 
-            <p class="hero__tagline">
-                Premium joggers built for every move.
-            </p>
+        <div
+            class="brand-loader"
+            id="brandLoader"
+            aria-hidden="true"
+        >
+            <div class="brand-loader__content">
+                <div class="brand-loader__mark">
+                    <img
+                        src="{% static 'images/brand/shopsphere-mark.svg' %}"
+                        alt=""
+                    >
+                </div>
 
-            <button
-                class="hero__button"
-                id="exploreButton"
-                type="button"
-            >
-                Project Started
-            </button>
+                <div class="brand-loader__wordmark">
+                    ShopSphere
+                </div>
+
+                <p class="brand-loader__statement">
+                    Movement starts before the first step.
+                </p>
+
+                <div class="brand-loader__progress">
+                    <span id="loaderProgress"></span>
+                </div>
+
+                <div class="brand-loader__meta">
+                    <span>
+                        Premium movement
+                    </span>
+
+                    <span id="loaderPercentage">
+                        0%
+                    </span>
+                </div>
+            </div>
         </div>
-    </section>
+
+
+        <!-- ==================================
+             SCENE 01 — CINEMATIC HERO
+        =================================== -->
+
+        <section
+            class="motion-hero"
+            id="motionHero"
+        >
+            <video
+                class="motion-hero__video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                poster="{% static 'images/textures/gradient-mesh.svg' %}"
+            >
+                <source
+                    src="{% static 'videos/hero/hero-ambient.mp4' %}"
+                    type="video/mp4"
+                >
+            </video>
+
+            <div class="motion-hero__mesh"></div>
+            <div class="motion-hero__grain"></div>
+            <div class="motion-hero__glow motion-hero__glow--one"></div>
+            <div class="motion-hero__glow motion-hero__glow--two"></div>
+
+            <div class="motion-hero__layout">
+
+                <!-- Hero copy -->
+
+                <div class="motion-hero__copy">
+                    <div
+                        class="motion-hero__index"
+                        data-reveal
+                    >
+                        <span>01</span>
+                        <span>Performance footwear</span>
+                    </div>
+
+                    <h1
+                        class="motion-hero__title"
+                        aria-label="Move without limits"
+                    >
+                        <span
+                            class="motion-title-line"
+                            data-title-line
+                        >
+                            Move
+                        </span>
+
+                        <span
+                            class="motion-title-line motion-title-line--outline"
+                            data-title-line
+                        >
+                            without
+                        </span>
+
+                        <span
+                            class="motion-title-line"
+                            data-title-line
+                        >
+                            limits.
+                        </span>
+                    </h1>
+
+                    <p
+                        class="motion-hero__description"
+                        data-reveal
+                    >
+                        Performance joggers engineered for movement,
+                        responsive comfort and everyday momentum.
+                    </p>
+
+                    <div
+                        class="motion-hero__actions"
+                        data-reveal
+                    >
+                        <a
+                            href="{% url 'products:product_list' %}"
+                            class="motion-button motion-button--primary"
+                        >
+                            <span>
+                                Shop Collection
+                            </span>
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M5 12h14M13 6l6 6-6 6"
+                                />
+                            </svg>
+                        </a>
+
+                        <a
+                            href="#productStory"
+                            class="motion-button motion-button--secondary"
+                        >
+                            Explore the design
+                        </a>
+                    </div>
+
+                    <div
+                        class="motion-hero__availability"
+                        data-reveal
+                    >
+                        <span class="availability-dot"></span>
+
+                        <span>
+                            New performance collection available
+                        </span>
+                    </div>
+                </div>
+
+
+                <!-- Product stage -->
+
+                <div
+                    class="motion-product-stage"
+                    id="productStage"
+                >
+                    <div class="motion-product-stage__orbit"></div>
+                    <div class="motion-product-stage__orbit motion-product-stage__orbit--two"></div>
+
+                    <div class="motion-product-stage__number">
+                        01
+                    </div>
+
+                    <div
+                        class="motion-product-glow"
+                        aria-hidden="true"
+                    ></div>
+
+                    <img
+                        src="{% static 'images/products/hero-jogger.svg' %}"
+                        alt="ShopSphere performance jogger"
+                        class="motion-hero__product"
+                        id="heroProduct"
+                    >
+
+                    <!-- Feature callout 1 -->
+
+                    <article
+                        class="motion-callout motion-callout--upper"
+                        data-floating-card
+                        data-depth="1.1"
+                    >
+                        <span class="motion-callout__number">
+                            01
+                        </span>
+
+                        <div>
+                            <strong>
+                                Lightweight upper
+                            </strong>
+
+                            <p>
+                                Flexible structure designed for movement.
+                            </p>
+                        </div>
+                    </article>
+
+                    <!-- Feature callout 2 -->
+
+                    <article
+                        class="motion-callout motion-callout--cushion"
+                        data-floating-card
+                        data-depth="0.8"
+                    >
+                        <span class="motion-callout__number">
+                            02
+                        </span>
+
+                        <div>
+                            <strong>
+                                Responsive comfort
+                            </strong>
+
+                            <p>
+                                Soft cushioning for controlled impact.
+                            </p>
+                        </div>
+                    </article>
+
+                    <!-- Feature callout 3 -->
+
+                    <article
+                        class="motion-callout motion-callout--outsole"
+                        data-floating-card
+                        data-depth="1.35"
+                    >
+                        <span class="motion-callout__number">
+                            03
+                        </span>
+
+                        <div>
+                            <strong>
+                                High-grip outsole
+                            </strong>
+
+                            <p>
+                                Stable traction across everyday surfaces.
+                            </p>
+                        </div>
+                    </article>
+
+                    <div class="motion-product-stage__label">
+                        <span>
+                            ShopSphere
+                        </span>
+
+                        <strong>
+                            Motion Series 01
+                        </strong>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Bottom hero information -->
+
+            <div class="motion-hero__footer">
+                <div class="motion-hero__footer-item">
+                    <span>
+                        Designed for
+                    </span>
+
+                    <strong>
+                        Daily movement
+                    </strong>
+                </div>
+
+                <div class="motion-hero__footer-item">
+                    <span>
+                        Experience
+                    </span>
+
+                    <strong>
+                        Responsive comfort
+                    </strong>
+                </div>
+
+                <a
+                    href="#productStory"
+                    class="motion-scroll-cue"
+                    aria-label="Scroll to product story"
+                >
+                    <span>
+                        Scroll to explore
+                    </span>
+
+                    <span class="motion-scroll-cue__line"></span>
+                </a>
+            </div>
+        </section>
+
+
+        <!-- ==================================
+             SCENE 02 — STORY PREVIEW
+        =================================== -->
+
+        <section
+            class="product-story-preview"
+            id="productStory"
+        >
+            <div class="product-story-preview__background">
+                PERFORMANCE
+            </div>
+
+            <div class="product-story-preview__header">
+                <span
+                    class="product-story-preview__number"
+                    data-reveal
+                >
+                    02
+                </span>
+
+                <div data-reveal>
+                    <p>
+                        The movement system
+                    </p>
+
+                    <h2>
+                        Built around the way you move.
+                    </h2>
+                </div>
+            </div>
+
+            <div class="product-story-preview__layout">
+
+                <figure
+                    class="story-product-frame"
+                    data-reveal
+                >
+                    <img
+                        src="{% static 'images/products/jogger-angle-side.svg' %}"
+                        alt="ShopSphere jogger side profile"
+                    >
+
+                    <figcaption>
+                        <span>
+                            Performance profile
+                        </span>
+
+                        <strong>
+                            Balanced from heel to toe
+                        </strong>
+                    </figcaption>
+                </figure>
+
+                <div class="story-feature-list">
+                    <article data-reveal>
+                        <span>
+                            01
+                        </span>
+
+                        <div>
+                            <h3>
+                                Flexible construction
+                            </h3>
+
+                            <p>
+                                A lightweight upper follows natural
+                                movement without unnecessary bulk.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article data-reveal>
+                        <span>
+                            02
+                        </span>
+
+                        <div>
+                            <h3>
+                                Responsive cushioning
+                            </h3>
+
+                            <p>
+                                Controlled softness supports walking,
+                                training and daily activity.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article data-reveal>
+                        <span>
+                            03
+                        </span>
+
+                        <div>
+                            <h3>
+                                Confident traction
+                            </h3>
+
+                            <p>
+                                The outsole is designed to maintain
+                                stability across changing surfaces.
+                            </p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <div class="product-story-preview__action">
+                <a
+                    href="{% url 'products:product_list' %}"
+                    class="motion-button motion-button--primary"
+                >
+                    View all joggers
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script
+        src="{% static 'js/home-motion.js' %}"
+        defer
+    ></script>
 {% endblock %}
