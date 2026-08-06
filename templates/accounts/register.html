@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Create Account | ShopSphere
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/auth.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+    <section class="auth-page">
+        <div class="auth-visual">
+            <div class="auth-visual__content">
+                <p class="auth-eyebrow">
+                    Join ShopSphere
+                </p>
+
+                <h1>
+                    Your next move starts here.
+                </h1>
+
+                <p>
+                    Create an account to manage your profile,
+                    cart, addresses, and future orders.
+                </p>
+            </div>
+
+            <span class="auth-visual__number">
+                01
+            </span>
+        </div>
+
+        <div class="auth-panel">
+            <div class="auth-panel__header">
+                <p class="auth-eyebrow">
+                    Customer Account
+                </p>
+
+                <h2>
+                    Create account
+                </h2>
+
+                <p>
+                    Enter your details to begin your ShopSphere journey.
+                </p>
+            </div>
+
+            <form
+                method="post"
+                class="auth-form"
+                novalidate
+            >
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="auth-form__errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="auth-form__grid">
+                    {% for field in form %}
+                        <div
+                            class="auth-field
+                            {% if field.name == 'password1' or field.name == 'password2' %}
+                                auth-field--full
+                            {% endif %}"
+                        >
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="auth-field__help">
+                                    {{ field.help_text|safe }}
+                                </div>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <p class="auth-field__error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                >
+                    Create ShopSphere Account
+                </button>
+
+               <p class="auth-form__footer">
+                   Already registered?
+
+                   <a href="{% url 'accounts:login' %}">
+                        Sign in
+                   </a>
+                </p>
+            </form>
+        </div>
+    </section>
+{% endblock %}

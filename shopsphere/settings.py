@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     # ShopSphere applications
     "core",
     "products",
-    "accounts",
+    "accounts.apps.AccountsConfig",
     "cart",
     "orders",
 ]
@@ -128,3 +128,7 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+LOGIN_URL = "accounts:login"
+LOGIN_REDIRECT_URL = "accounts:profile"
+LOGOUT_REDIRECT_URL = "core:home"

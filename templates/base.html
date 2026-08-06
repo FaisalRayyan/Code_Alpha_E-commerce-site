@@ -16,21 +16,30 @@
     >
 
     <title>
-        {% block title %}ShopSphere{% endblock %}
+        {% block title %}
+            ShopSphere
+        {% endblock %}
     </title>
 
+    <!-- Main website styles -->
     <link
-    rel="stylesheet"
-    href="{% static 'css/style.css' %}"
->
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
 
+    <!-- Page-specific styles -->
+    {% block extra_css %}
+    {% endblock %}
+
+    <!-- Global header styles must load last -->
     <link
         rel="stylesheet"
         href="{% static 'css/global.css' %}"
     >
-
-    {% block extra_css %}
-    {% endblock %}
+    <link
+       rel="stylesheet"
+       href="{% static 'css/password-toggle.css' %}"
+    >
 </head>
 
 <body>
@@ -72,8 +81,48 @@
                 class="site-header__cart"
             >
                 Cart
-                <span>{{ global_cart_count }}</span>
+
+                <span>
+                    {{ global_cart_count }}
+                </span>
             </a>
+
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'accounts:profile' %}">
+                    Profile
+                </a>
+
+                <span class="site-header__customer">
+                    Hi,
+                    {{ request.user.first_name|default:request.user.username }}
+                </span>
+
+                <form
+                    method="post"
+                    action="{% url 'accounts:logout' %}"
+                    class="site-header__logout-form"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="site-header__logout-button"
+                    >
+                        Logout
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">
+                    Login
+                </a>
+
+                <a
+                    href="{% url 'accounts:register' %}"
+                    class="site-header__register"
+                >
+                    Register
+                </a>
+            {% endif %}
         </nav>
     </header>
 
@@ -83,5 +132,8 @@
     </main>
 
     <script src="{% static 'js/app.js' %}"></script>
+
+    {% block extra_js %}
+    {% endblock %}
 </body>
 </html>

@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    My Profile | ShopSphere
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/profile.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+    <section class="profile-page">
+        <header class="profile-hero">
+            <div class="profile-hero__identity">
+                <div class="profile-avatar">
+                    {{ request.user.first_name|first|default:request.user.username|first }}
+                    {{ request.user.last_name|first }}
+                </div>
+
+                <div>
+                    <p class="profile-eyebrow">
+                        Customer Account
+                    </p>
+
+                    <h1>
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </h1>
+
+                    <p>
+                        Member since
+                        {{ request.user.date_joined|date:"F Y" }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="profile-hero__actions">
+                 <a
+                     href="{% url 'accounts:change_password' %}"
+                     class="profile-password-button"
+                 >
+                     Change Password
+                 </a>
+            
+                 <a
+                     href="{% url 'accounts:edit_profile' %}"
+                     class="profile-edit-button"
+                 >
+                      Edit Profile
+                  </a>
+            </div>              
+        </header>
+
+        <div class="profile-layout">
+            <div class="profile-content">
+                <article class="profile-card">
+                    <div class="profile-card__header">
+                        <div>
+                            <p class="profile-eyebrow">
+                                Personal Information
+                            </p>
+
+                            <h2>
+                                Account details
+                            </h2>
+                        </div>
+
+                        <span class="profile-card__number">
+                            01
+                        </span>
+                    </div>
+
+                    <div class="profile-information">
+                        <div>
+                            <span>Full name</span>
+                            <strong>
+                                {{ request.user.get_full_name|default:"Not provided" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Username</span>
+                            <strong>
+                                {{ request.user.username }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Email</span>
+                            <strong>
+                                {{ request.user.email|default:"Not provided" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Phone</span>
+                            <strong>
+                                {{ customer_profile.phone|default:"Not provided" }}
+                            </strong>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="profile-card">
+                    <div class="profile-card__header">
+                        <div>
+                            <p class="profile-eyebrow">
+                                Delivery Information
+                            </p>
+
+                            <h2>
+                                Saved address
+                            </h2>
+                        </div>
+
+                        <span class="profile-card__number">
+                            02
+                        </span>
+                    </div>
+
+                    {% if customer_profile.address_line_1 %}
+                        <address class="profile-address">
+                            <strong>
+                                {{ customer_profile.address_line_1 }}
+                            </strong>
+
+                            {% if customer_profile.address_line_2 %}
+                                <span>
+                                    {{ customer_profile.address_line_2 }}
+                                </span>
+                            {% endif %}
+
+                            <span>
+                                {{ customer_profile.city }}
+                                {% if customer_profile.province %}
+                                    , {{ customer_profile.province }}
+                                {% endif %}
+                            </span>
+
+                            {% if customer_profile.postal_code %}
+                                <span>
+                                    Postal code:
+                                    {{ customer_profile.postal_code }}
+                                </span>
+                            {% endif %}
+
+                            <span>
+                                {{ customer_profile.country }}
+                            </span>
+                        </address>
+                    {% else %}
+                        <div class="profile-empty">
+                            <p>
+                                No delivery address has been saved.
+                            </p>
+
+                            <a href="{% url 'accounts:edit_profile' %}">
+                                Add delivery address
+                            </a>
+                        </div>
+                    {% endif %}
+                </article>
+            </div>
+
+            <aside class="profile-sidebar">
+                <article class="profile-summary">
+                    <p class="profile-eyebrow">
+                        Shopping Summary
+                    </p>
+
+                    <h2>
+                        Your ShopSphere
+                    </h2>
+
+                    <div class="profile-summary__rows">
+                        <div>
+                            <span>Cart items</span>
+                            <strong>{{ global_cart_count }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Cart subtotal</span>
+                            <strong>
+                                {% if global_cart %}
+                                    Rs. {{ global_cart.subtotal }}
+                                {% else %}
+                                    Rs. 0.00
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Orders</span>
+                            <strong>Coming soon</strong>
+                        </div>
+                    </div>
+
+                    <a
+                        href="{% url 'cart:cart_detail' %}"
+                        class="profile-summary__button"
+                    >
+                        View Shopping Cart
+                    </a>
+                </article>
+
+                <article class="profile-status">
+                    <span></span>
+
+                    <div>
+                        <strong>
+                            Account active
+                        </strong>
+
+                        <p>
+                            Your ShopSphere customer account is ready.
+                        </p>
+                    </div>
+                </article>
+            </aside>
+        </div>
+    </section>
+{% endblock %}
