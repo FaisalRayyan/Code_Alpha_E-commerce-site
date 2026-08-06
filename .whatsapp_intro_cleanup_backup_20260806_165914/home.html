@@ -1,0 +1,395 @@
+﻿{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ShopSphere | Move Different{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home-reference-motion.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include "core/_cinematic_intro.html" %}
+<div class="ss-launch" id="ssLaunch">
+
+    <section class="ss-launch-stage" id="ssLaunchStage">
+        <button
+            class="ss-launch-skip"
+            id="ssLaunchSkip"
+            type="button"
+            aria-label="Skip launch animation"
+        >
+            Skip intro
+        </button>
+
+        <div class="ss-launch-progress" aria-hidden="true">
+            <span id="ssLaunchProgress"></span>
+        </div>
+
+        <!-- Scene 01: minimal opening -->
+        <article class="ss-scene ss-scene--opening is-active" data-scene="opening">
+            <div class="ss-scene__white-orb ss-scene__white-orb--one"></div>
+            <div class="ss-scene__white-orb ss-scene__white-orb--two"></div>
+
+            <div class="ss-opening-copy">
+                <p>Imagine your next move</p>
+                <h1>looking like this.</h1>
+            </div>
+
+            <div class="ss-opening-object" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <p class="ss-scene-label">ShopSphere / Launch system 01</p>
+        </article>
+
+        <!-- Scene 02: statement -->
+        <article class="ss-scene ss-scene--statement" data-scene="statement">
+            <p class="ss-statement-kicker">Standing between you</p>
+
+            <h2>
+                and every
+                <span>move.</span>
+            </h2>
+
+            <div class="ss-statement-line"></div>
+        </article>
+
+        <!-- Scene 03: logo reveal -->
+        <article class="ss-scene ss-scene--brand" data-scene="brand">
+            <div class="ss-brand-mesh"></div>
+
+            <div class="ss-brand-reveal">
+                <img
+                    src="{% static 'images/brand/shopsphere-mark.svg' %}"
+                    alt=""
+                    class="ss-brand-reveal__mark"
+                >
+
+                <div>
+                    <p>Performance footwear</p>
+                    <h2>ShopSphere</h2>
+                    <span>Move different. Every day.</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- Scene 04: product identity cards -->
+        <article class="ss-scene ss-scene--identity" data-scene="identity">
+            <div class="ss-identity-copy">
+                <p>One collection.</p>
+                <h2>Three movement identities.</h2>
+            </div>
+
+            <div class="ss-identity-stage">
+                <article class="ss-product-card ss-product-card--blue">
+                    <div class="ss-product-card__meta">
+                        <span>01</span>
+                        <small>Running</small>
+                    </div>
+
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/hero-jogger.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/hero-jogger.svg' %}"
+                            alt="ShopSphere Motion Runner"
+                        >
+                    </picture>
+
+                    <div class="ss-product-card__footer">
+                        <strong>Motion Runner</strong>
+                        <span>Responsive speed</span>
+                    </div>
+                </article>
+
+                <article class="ss-product-card ss-product-card--lime">
+                    <div class="ss-product-card__meta">
+                        <span>02</span>
+                        <small>Lifestyle</small>
+                    </div>
+
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/jogger-colorway-neon.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/jogger-colorway-neon.svg' %}"
+                            alt="ShopSphere Cloud Form"
+                        >
+                    </picture>
+
+                    <div class="ss-product-card__footer">
+                        <strong>Cloud Form</strong>
+                        <span>All-day comfort</span>
+                    </div>
+                </article>
+
+                <article class="ss-product-card ss-product-card--orange">
+                    <div class="ss-product-card__meta">
+                        <span>03</span>
+                        <small>Training</small>
+                    </div>
+
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/jogger-colorway-white.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/jogger-colorway-white.svg' %}"
+                            alt="ShopSphere Pulse Trainer"
+                        >
+                    </picture>
+
+                    <div class="ss-product-card__footer">
+                        <strong>Pulse Trainer</strong>
+                        <span>Controlled impact</span>
+                    </div>
+                </article>
+            </div>
+        </article>
+
+        <!-- Scene 05: cards assemble -->
+        <article class="ss-scene ss-scene--assembly" data-scene="assembly">
+            <div class="ss-assembly-bg"></div>
+
+            <div class="ss-assembly-copy">
+                <p>Designed as a system.</p>
+                <h2>Every detail moves together.</h2>
+            </div>
+
+            <div class="ss-assembly-board">
+                <article class="ss-assembly-card ss-assembly-card--hero">
+                    <span>Motion Series</span>
+                    <strong>Built for every move.</strong>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--comfort">
+                    <span>01</span>
+                    <strong>Responsive cushioning</strong>
+                    <small>Soft landings. Fast recovery.</small>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--upper">
+                    <span>02</span>
+                    <strong>Engineered upper</strong>
+                    <small>Breathable and flexible.</small>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--grip">
+                    <span>03</span>
+                    <strong>Controlled grip</strong>
+                    <small>Stable across daily surfaces.</small>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--stock">
+                    <i></i>
+                    <strong>In stock</strong>
+                    <small>Ready for your next move.</small>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--rating">
+                    <strong>4.9</strong>
+                    <span>Customer movement score</span>
+                </article>
+            </div>
+        </article>
+
+        <!-- Scene 06: campaign / lifestyle -->
+        <article class="ss-scene ss-scene--campaign" data-scene="campaign">
+            <video
+                class="ss-campaign-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+            >
+                <source
+                    src="{% static 'videos/campaign/campaign-ambient.mp4' %}"
+                    type="video/mp4"
+                >
+            </video>
+
+            <div class="ss-campaign-overlay"></div>
+
+            <div class="ss-campaign-copy">
+                <p>From first step</p>
+                <h2>to full momentum.</h2>
+            </div>
+
+            <div class="ss-campaign-products">
+                <article>
+                    <span>Run</span>
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/hero-jogger.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/hero-jogger.svg' %}"
+                            alt="Running collection"
+                        >
+                    </picture>
+                </article>
+
+                <article>
+                    <span>Train</span>
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/jogger-colorway-white.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/jogger-colorway-white.svg' %}"
+                            alt="Training collection"
+                        >
+                    </picture>
+                </article>
+
+                <article>
+                    <span>Live</span>
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/jogger-colorway-neon.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/jogger-colorway-neon.svg' %}"
+                            alt="Lifestyle collection"
+                        >
+                    </picture>
+                </article>
+            </div>
+        </article>
+
+        <!-- Scene 07: checkout workflow -->
+        <article class="ss-scene ss-scene--workflow" data-scene="workflow">
+            <div class="ss-workflow-copy">
+                <p>From selection to delivery.</p>
+                <h2>A shopping flow that feels effortless.</h2>
+            </div>
+
+            <div class="ss-workflow-line">
+                <article class="ss-workflow-step">
+                    <span>01</span>
+                    <i class="is-complete"></i>
+                    <div>
+                        <strong>Choose your movement</strong>
+                        <small>Product, size and color selected.</small>
+                    </div>
+                </article>
+
+                <article class="ss-workflow-step">
+                    <span>02</span>
+                    <i class="is-complete"></i>
+                    <div>
+                        <strong>Secure checkout</strong>
+                        <small>Address and order confirmed.</small>
+                    </div>
+                </article>
+
+                <article class="ss-workflow-step">
+                    <span>03</span>
+                    <i class="is-current"></i>
+                    <div>
+                        <strong>Order processing</strong>
+                        <small>Your pair is being prepared.</small>
+                    </div>
+                </article>
+
+                <article class="ss-workflow-step">
+                    <span>04</span>
+                    <i></i>
+                    <div>
+                        <strong>Delivered</strong>
+                        <small>Ready for the next move.</small>
+                    </div>
+                </article>
+            </div>
+
+            <article class="ss-verification-card">
+                <div class="ss-verification-card__heading">
+                    <div>
+                        <span>Order details</span>
+                        <strong>SS-2026-0081</strong>
+                    </div>
+
+                    <b>Verified</b>
+                </div>
+
+                <div class="ss-verification-card__body">
+                    <div>
+                        <span>Product</span>
+                        <strong>Motion Runner</strong>
+                    </div>
+
+                    <div>
+                        <span>Size</span>
+                        <strong>42</strong>
+                    </div>
+
+                    <div>
+                        <span>Payment</span>
+                        <strong>Cash on delivery</strong>
+                    </div>
+
+                    <div>
+                        <span>Status</span>
+                        <strong>Processing</strong>
+                    </div>
+                </div>
+            </article>
+        </article>
+
+        <!-- Scene 08: final reveal -->
+        <article class="ss-scene ss-scene--final" data-scene="final">
+            <div class="ss-final-mesh"></div>
+
+            <div class="ss-final-brand">
+                <img
+                    src="{% static 'images/brand/shopsphere-mark.svg' %}"
+                    alt=""
+                >
+
+                <h2>ShopSphere</h2>
+                <p>Move different. Every day.</p>
+
+                <a href="{% url 'products:product_list' %}">
+                    Enter the collection
+                    <span>â†’</span>
+                </a>
+            </div>
+        </article>
+    </section>
+
+    <!-- Normal homepage begins after launch sequence -->
+    <section class="ss-after-launch" id="ssAfterLaunch">
+        <div>
+            <p>ShopSphere collection</p>
+
+            <h2>
+                Premium movement,
+                connected to a real Django store.
+            </h2>
+
+            <a href="{% url 'products:product_list' %}">
+                Shop all products
+                <span>â†’</span>
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="{% static 'js/home-reference-motion.js' %}"></script>
+{% endblock %}
+
