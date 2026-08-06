@@ -1,451 +1,393 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}
-    ShopSphere | Move Without Limits
-{% endblock %}
+{% block title %}ShopSphere | Move Different{% endblock %}
 
 {% block extra_css %}
-    <link
-        rel="stylesheet"
-        href="{% static 'css/home-premium.css' %}"
-    >
+<link rel="stylesheet" href="{% static 'css/home-reference-motion.css' %}">
 {% endblock %}
 
 {% block content %}
-    <div class="premium-home">
+<div class="ss-launch" id="ssLaunch">
 
-        <!-- ==================================
-             SCENE 00 — BRAND LOADER
-        =================================== -->
-
-        <div
-            class="brand-loader"
-            id="brandLoader"
-            aria-hidden="true"
+    <section class="ss-launch-stage" id="ssLaunchStage">
+        <button
+            class="ss-launch-skip"
+            id="ssLaunchSkip"
+            type="button"
+            aria-label="Skip launch animation"
         >
-            <div class="brand-loader__content">
-                <div class="brand-loader__mark">
-                    <img
-                        src="{% static 'images/brand/shopsphere-mark.svg' %}"
-                        alt=""
-                    >
-                </div>
+            Skip intro
+        </button>
 
-                <div class="brand-loader__wordmark">
-                    ShopSphere
-                </div>
-
-                <p class="brand-loader__statement">
-                    Movement starts before the first step.
-                </p>
-
-                <div class="brand-loader__progress">
-                    <span id="loaderProgress"></span>
-                </div>
-
-                <div class="brand-loader__meta">
-                    <span>
-                        Premium movement
-                    </span>
-
-                    <span id="loaderPercentage">
-                        0%
-                    </span>
-                </div>
-            </div>
+        <div class="ss-launch-progress" aria-hidden="true">
+            <span id="ssLaunchProgress"></span>
         </div>
 
+        <!-- Scene 01: minimal opening -->
+        <article class="ss-scene ss-scene--opening is-active" data-scene="opening">
+            <div class="ss-scene__white-orb ss-scene__white-orb--one"></div>
+            <div class="ss-scene__white-orb ss-scene__white-orb--two"></div>
 
-        <!-- ==================================
-             SCENE 01 — CINEMATIC HERO
-        =================================== -->
+            <div class="ss-opening-copy">
+                <p>Imagine your next move</p>
+                <h1>looking like this.</h1>
+            </div>
 
-        <section
-            class="motion-hero"
-            id="motionHero"
-        >
+            <div class="ss-opening-object" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <p class="ss-scene-label">ShopSphere / Launch system 01</p>
+        </article>
+
+        <!-- Scene 02: statement -->
+        <article class="ss-scene ss-scene--statement" data-scene="statement">
+            <p class="ss-statement-kicker">Standing between you</p>
+
+            <h2>
+                and every
+                <span>move.</span>
+            </h2>
+
+            <div class="ss-statement-line"></div>
+        </article>
+
+        <!-- Scene 03: logo reveal -->
+        <article class="ss-scene ss-scene--brand" data-scene="brand">
+            <div class="ss-brand-mesh"></div>
+
+            <div class="ss-brand-reveal">
+                <img
+                    src="{% static 'images/brand/shopsphere-mark.svg' %}"
+                    alt=""
+                    class="ss-brand-reveal__mark"
+                >
+
+                <div>
+                    <p>Performance footwear</p>
+                    <h2>ShopSphere</h2>
+                    <span>Move different. Every day.</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- Scene 04: product identity cards -->
+        <article class="ss-scene ss-scene--identity" data-scene="identity">
+            <div class="ss-identity-copy">
+                <p>One collection.</p>
+                <h2>Three movement identities.</h2>
+            </div>
+
+            <div class="ss-identity-stage">
+                <article class="ss-product-card ss-product-card--blue">
+                    <div class="ss-product-card__meta">
+                        <span>01</span>
+                        <small>Running</small>
+                    </div>
+
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/hero-jogger.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/hero-jogger.svg' %}"
+                            alt="ShopSphere Motion Runner"
+                        >
+                    </picture>
+
+                    <div class="ss-product-card__footer">
+                        <strong>Motion Runner</strong>
+                        <span>Responsive speed</span>
+                    </div>
+                </article>
+
+                <article class="ss-product-card ss-product-card--lime">
+                    <div class="ss-product-card__meta">
+                        <span>02</span>
+                        <small>Lifestyle</small>
+                    </div>
+
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/jogger-colorway-neon.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/jogger-colorway-neon.svg' %}"
+                            alt="ShopSphere Cloud Form"
+                        >
+                    </picture>
+
+                    <div class="ss-product-card__footer">
+                        <strong>Cloud Form</strong>
+                        <span>All-day comfort</span>
+                    </div>
+                </article>
+
+                <article class="ss-product-card ss-product-card--orange">
+                    <div class="ss-product-card__meta">
+                        <span>03</span>
+                        <small>Training</small>
+                    </div>
+
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/jogger-colorway-white.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/jogger-colorway-white.svg' %}"
+                            alt="ShopSphere Pulse Trainer"
+                        >
+                    </picture>
+
+                    <div class="ss-product-card__footer">
+                        <strong>Pulse Trainer</strong>
+                        <span>Controlled impact</span>
+                    </div>
+                </article>
+            </div>
+        </article>
+
+        <!-- Scene 05: cards assemble -->
+        <article class="ss-scene ss-scene--assembly" data-scene="assembly">
+            <div class="ss-assembly-bg"></div>
+
+            <div class="ss-assembly-copy">
+                <p>Designed as a system.</p>
+                <h2>Every detail moves together.</h2>
+            </div>
+
+            <div class="ss-assembly-board">
+                <article class="ss-assembly-card ss-assembly-card--hero">
+                    <span>Motion Series</span>
+                    <strong>Built for every move.</strong>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--comfort">
+                    <span>01</span>
+                    <strong>Responsive cushioning</strong>
+                    <small>Soft landings. Fast recovery.</small>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--upper">
+                    <span>02</span>
+                    <strong>Engineered upper</strong>
+                    <small>Breathable and flexible.</small>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--grip">
+                    <span>03</span>
+                    <strong>Controlled grip</strong>
+                    <small>Stable across daily surfaces.</small>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--stock">
+                    <i></i>
+                    <strong>In stock</strong>
+                    <small>Ready for your next move.</small>
+                </article>
+
+                <article class="ss-assembly-card ss-assembly-card--rating">
+                    <strong>4.9</strong>
+                    <span>Customer movement score</span>
+                </article>
+            </div>
+        </article>
+
+        <!-- Scene 06: campaign / lifestyle -->
+        <article class="ss-scene ss-scene--campaign" data-scene="campaign">
             <video
-                class="motion-hero__video"
+                class="ss-campaign-video"
                 autoplay
                 muted
                 loop
                 playsinline
                 preload="metadata"
-                poster="{% static 'images/textures/gradient-mesh.svg' %}"
             >
                 <source
-                    src="{% static 'videos/hero/hero-ambient.mp4' %}"
+                    src="{% static 'videos/campaign/campaign-ambient.mp4' %}"
                     type="video/mp4"
                 >
             </video>
 
-            <div class="motion-hero__mesh"></div>
-            <div class="motion-hero__grain"></div>
-            <div class="motion-hero__glow motion-hero__glow--one"></div>
-            <div class="motion-hero__glow motion-hero__glow--two"></div>
+            <div class="ss-campaign-overlay"></div>
 
-            <div class="motion-hero__layout">
-
-                <!-- Hero copy -->
-
-                <div class="motion-hero__copy">
-                    <div
-                        class="motion-hero__index"
-                        data-reveal
-                    >
-                        <span>01</span>
-                        <span>Performance footwear</span>
-                    </div>
-
-                    <h1
-                        class="motion-hero__title"
-                        aria-label="Move without limits"
-                    >
-                        <span
-                            class="motion-title-line"
-                            data-title-line
-                        >
-                            Move
-                        </span>
-
-                        <span
-                            class="motion-title-line motion-title-line--outline"
-                            data-title-line
-                        >
-                            without
-                        </span>
-
-                        <span
-                            class="motion-title-line"
-                            data-title-line
-                        >
-                            limits.
-                        </span>
-                    </h1>
-
-                    <p
-                        class="motion-hero__description"
-                        data-reveal
-                    >
-                        Performance joggers engineered for movement,
-                        responsive comfort and everyday momentum.
-                    </p>
-
-                    <div
-                        class="motion-hero__actions"
-                        data-reveal
-                    >
-                        <a
-                            href="{% url 'products:product_list' %}"
-                            class="motion-button motion-button--primary"
-                        >
-                            <span>
-                                Shop Collection
-                            </span>
-
-                            <svg
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    d="M5 12h14M13 6l6 6-6 6"
-                                />
-                            </svg>
-                        </a>
-
-                        <a
-                            href="#productStory"
-                            class="motion-button motion-button--secondary"
-                        >
-                            Explore the design
-                        </a>
-                    </div>
-
-                    <div
-                        class="motion-hero__availability"
-                        data-reveal
-                    >
-                        <span class="availability-dot"></span>
-
-                        <span>
-                            New performance collection available
-                        </span>
-                    </div>
-                </div>
-
-
-                <!-- Product stage -->
-
-                <div
-                    class="motion-product-stage"
-                    id="productStage"
-                >
-                    <div class="motion-product-stage__orbit"></div>
-                    <div class="motion-product-stage__orbit motion-product-stage__orbit--two"></div>
-
-                    <div class="motion-product-stage__number">
-                        01
-                    </div>
-
-                    <div
-                        class="motion-product-glow"
-                        aria-hidden="true"
-                    ></div>
-
-                    <img
-                        src="{% static 'images/products/hero-jogger.svg' %}"
-                        alt="ShopSphere performance jogger"
-                        class="motion-hero__product"
-                        id="heroProduct"
-                    >
-
-                    <!-- Feature callout 1 -->
-
-                    <article
-                        class="motion-callout motion-callout--upper"
-                        data-floating-card
-                        data-depth="1.1"
-                    >
-                        <span class="motion-callout__number">
-                            01
-                        </span>
-
-                        <div>
-                            <strong>
-                                Lightweight upper
-                            </strong>
-
-                            <p>
-                                Flexible structure designed for movement.
-                            </p>
-                        </div>
-                    </article>
-
-                    <!-- Feature callout 2 -->
-
-                    <article
-                        class="motion-callout motion-callout--cushion"
-                        data-floating-card
-                        data-depth="0.8"
-                    >
-                        <span class="motion-callout__number">
-                            02
-                        </span>
-
-                        <div>
-                            <strong>
-                                Responsive comfort
-                            </strong>
-
-                            <p>
-                                Soft cushioning for controlled impact.
-                            </p>
-                        </div>
-                    </article>
-
-                    <!-- Feature callout 3 -->
-
-                    <article
-                        class="motion-callout motion-callout--outsole"
-                        data-floating-card
-                        data-depth="1.35"
-                    >
-                        <span class="motion-callout__number">
-                            03
-                        </span>
-
-                        <div>
-                            <strong>
-                                High-grip outsole
-                            </strong>
-
-                            <p>
-                                Stable traction across everyday surfaces.
-                            </p>
-                        </div>
-                    </article>
-
-                    <div class="motion-product-stage__label">
-                        <span>
-                            ShopSphere
-                        </span>
-
-                        <strong>
-                            Motion Series 01
-                        </strong>
-                    </div>
-                </div>
+            <div class="ss-campaign-copy">
+                <p>From first step</p>
+                <h2>to full momentum.</h2>
             </div>
 
+            <div class="ss-campaign-products">
+                <article>
+                    <span>Run</span>
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/hero-jogger.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/hero-jogger.svg' %}"
+                            alt="Running collection"
+                        >
+                    </picture>
+                </article>
 
-            <!-- Bottom hero information -->
+                <article>
+                    <span>Train</span>
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/jogger-colorway-white.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/jogger-colorway-white.svg' %}"
+                            alt="Training collection"
+                        >
+                    </picture>
+                </article>
 
-            <div class="motion-hero__footer">
-                <div class="motion-hero__footer-item">
-                    <span>
-                        Designed for
-                    </span>
+                <article>
+                    <span>Live</span>
+                    <picture>
+                        <source
+                            srcset="{% static 'images/products/jogger-colorway-neon.webp' %}"
+                            type="image/webp"
+                        >
+                        <img
+                            src="{% static 'images/products/jogger-colorway-neon.svg' %}"
+                            alt="Lifestyle collection"
+                        >
+                    </picture>
+                </article>
+            </div>
+        </article>
 
-                    <strong>
-                        Daily movement
-                    </strong>
+        <!-- Scene 07: checkout workflow -->
+        <article class="ss-scene ss-scene--workflow" data-scene="workflow">
+            <div class="ss-workflow-copy">
+                <p>From selection to delivery.</p>
+                <h2>A shopping flow that feels effortless.</h2>
+            </div>
+
+            <div class="ss-workflow-line">
+                <article class="ss-workflow-step">
+                    <span>01</span>
+                    <i class="is-complete"></i>
+                    <div>
+                        <strong>Choose your movement</strong>
+                        <small>Product, size and color selected.</small>
+                    </div>
+                </article>
+
+                <article class="ss-workflow-step">
+                    <span>02</span>
+                    <i class="is-complete"></i>
+                    <div>
+                        <strong>Secure checkout</strong>
+                        <small>Address and order confirmed.</small>
+                    </div>
+                </article>
+
+                <article class="ss-workflow-step">
+                    <span>03</span>
+                    <i class="is-current"></i>
+                    <div>
+                        <strong>Order processing</strong>
+                        <small>Your pair is being prepared.</small>
+                    </div>
+                </article>
+
+                <article class="ss-workflow-step">
+                    <span>04</span>
+                    <i></i>
+                    <div>
+                        <strong>Delivered</strong>
+                        <small>Ready for the next move.</small>
+                    </div>
+                </article>
+            </div>
+
+            <article class="ss-verification-card">
+                <div class="ss-verification-card__heading">
+                    <div>
+                        <span>Order details</span>
+                        <strong>SS-2026-0081</strong>
+                    </div>
+
+                    <b>Verified</b>
                 </div>
 
-                <div class="motion-hero__footer-item">
-                    <span>
-                        Experience
-                    </span>
+                <div class="ss-verification-card__body">
+                    <div>
+                        <span>Product</span>
+                        <strong>Motion Runner</strong>
+                    </div>
 
-                    <strong>
-                        Responsive comfort
-                    </strong>
+                    <div>
+                        <span>Size</span>
+                        <strong>42</strong>
+                    </div>
+
+                    <div>
+                        <span>Payment</span>
+                        <strong>Cash on delivery</strong>
+                    </div>
+
+                    <div>
+                        <span>Status</span>
+                        <strong>Processing</strong>
+                    </div>
                 </div>
+            </article>
+        </article>
 
-                <a
-                    href="#productStory"
-                    class="motion-scroll-cue"
-                    aria-label="Scroll to product story"
+        <!-- Scene 08: final reveal -->
+        <article class="ss-scene ss-scene--final" data-scene="final">
+            <div class="ss-final-mesh"></div>
+
+            <div class="ss-final-brand">
+                <img
+                    src="{% static 'images/brand/shopsphere-mark.svg' %}"
+                    alt=""
                 >
-                    <span>
-                        Scroll to explore
-                    </span>
 
-                    <span class="motion-scroll-cue__line"></span>
+                <h2>ShopSphere</h2>
+                <p>Move different. Every day.</p>
+
+                <a href="{% url 'products:product_list' %}">
+                    Enter the collection
+                    <span>→</span>
                 </a>
             </div>
-        </section>
+        </article>
+    </section>
 
+    <!-- Normal homepage begins after launch sequence -->
+    <section class="ss-after-launch" id="ssAfterLaunch">
+        <div>
+            <p>ShopSphere collection</p>
 
-        <!-- ==================================
-             SCENE 02 — STORY PREVIEW
-        =================================== -->
+            <h2>
+                Premium movement,
+                connected to a real Django store.
+            </h2>
 
-        <section
-            class="product-story-preview"
-            id="productStory"
-        >
-            <div class="product-story-preview__background">
-                PERFORMANCE
-            </div>
-
-            <div class="product-story-preview__header">
-                <span
-                    class="product-story-preview__number"
-                    data-reveal
-                >
-                    02
-                </span>
-
-                <div data-reveal>
-                    <p>
-                        The movement system
-                    </p>
-
-                    <h2>
-                        Built around the way you move.
-                    </h2>
-                </div>
-            </div>
-
-            <div class="product-story-preview__layout">
-
-                <figure
-                    class="story-product-frame"
-                    data-reveal
-                >
-                    <img
-                        src="{% static 'images/products/jogger-angle-side.svg' %}"
-                        alt="ShopSphere jogger side profile"
-                    >
-
-                    <figcaption>
-                        <span>
-                            Performance profile
-                        </span>
-
-                        <strong>
-                            Balanced from heel to toe
-                        </strong>
-                    </figcaption>
-                </figure>
-
-                <div class="story-feature-list">
-                    <article data-reveal>
-                        <span>
-                            01
-                        </span>
-
-                        <div>
-                            <h3>
-                                Flexible construction
-                            </h3>
-
-                            <p>
-                                A lightweight upper follows natural
-                                movement without unnecessary bulk.
-                            </p>
-                        </div>
-                    </article>
-
-                    <article data-reveal>
-                        <span>
-                            02
-                        </span>
-
-                        <div>
-                            <h3>
-                                Responsive cushioning
-                            </h3>
-
-                            <p>
-                                Controlled softness supports walking,
-                                training and daily activity.
-                            </p>
-                        </div>
-                    </article>
-
-                    <article data-reveal>
-                        <span>
-                            03
-                        </span>
-
-                        <div>
-                            <h3>
-                                Confident traction
-                            </h3>
-
-                            <p>
-                                The outsole is designed to maintain
-                                stability across changing surfaces.
-                            </p>
-                        </div>
-                    </article>
-                </div>
-            </div>
-
-            <div class="product-story-preview__action">
-                <a
-                    href="{% url 'products:product_list' %}"
-                    class="motion-button motion-button--primary"
-                >
-                    View all joggers
-
-                    <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                    >
-                        <path d="M5 12h14M13 6l6 6-6 6"/>
-                    </svg>
-                </a>
-            </div>
-        </section>
-    </div>
+            <a href="{% url 'products:product_list' %}">
+                Shop all products
+                <span>→</span>
+            </a>
+        </div>
+    </section>
+</div>
 {% endblock %}
 
 {% block extra_js %}
-    <script
-        src="{% static 'js/home-motion.js' %}"
-        defer
-    ></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="{% static 'js/home-reference-motion.js' %}"></script>
 {% endblock %}
