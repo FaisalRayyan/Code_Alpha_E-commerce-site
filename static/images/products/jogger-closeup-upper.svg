@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+<defs><pattern id="m" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M0 14 14 0l14 14-14 14Z" fill="none" stroke="#7894ff" stroke-width="2" opacity=".45"/></pattern></defs>
+<rect width="900" height="520" rx="48" fill="#07080b"/>
+<path d="M105 434C168 154 336 64 791 94L717 430Z" fill="#14204b"/>
+<path d="M105 434C168 154 336 64 791 94L717 430Z" fill="url(#m)"/>
+<path d="M233 377c117-99 263-156 438-167" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" opacity=".88"/>
+<text x="74" y="112" fill="#7894ff" font-family="Arial" font-size="28" font-weight="700" letter-spacing="6">ENGINEERED UPPER</text>
+<text x="74" y="179" fill="#fff" font-family="Arial" font-size="62" font-weight="800">Breathable. Flexible. Secure.</text>
+</svg>

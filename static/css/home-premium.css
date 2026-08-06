@@ -1,0 +1,17 @@
+/* ShopSphere premium homepage foundation */
+:root{--ss-bg:#07080b;--ss-text:#f7f7f2;--ss-muted:#9aa0ad;--ss-blue:#4169ff;--ss-blue-soft:#7894ff}
+.motion-home{overflow:clip;background:var(--ss-bg);color:var(--ss-text)}
+.brand-loader{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#07080b;transition:opacity .7s ease,visibility .7s ease}
+.brand-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.motion-hero{position:relative;min-height:calc(100vh - 78px);display:grid;align-items:center;padding:7vw 6vw;isolation:isolate}
+.motion-hero__video{position:absolute;inset:0;z-index:-3;width:100%;height:100%;object-fit:cover;opacity:.45}
+.motion-hero:after{position:absolute;inset:0;z-index:-2;content:"";background:linear-gradient(90deg,rgba(7,8,11,.96),rgba(7,8,11,.25)),url("../images/textures/grain.png");background-size:auto,240px}
+.motion-hero__layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(460px,1.1fr);align-items:center;gap:4vw}
+.motion-hero__eyebrow{color:var(--ss-blue-soft);font-size:12px;font-weight:800;letter-spacing:4px;text-transform:uppercase}
+.motion-hero__title{margin-top:18px;font-size:clamp(72px,10vw,172px);line-height:.82;letter-spacing:-.075em}
+.motion-hero__copy{max-width:620px;margin-top:28px;color:var(--ss-muted);font-size:clamp(17px,1.6vw,23px);line-height:1.65}
+.motion-hero__product{width:min(780px,100%);justify-self:center;filter:drop-shadow(0 45px 70px rgba(0,0,0,.42));transform:rotate(-4deg);will-change:transform}
+[data-reveal]{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+[data-reveal].is-visible{opacity:1;transform:translateY(0)}
+@media(max-width:980px){.motion-hero__layout{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}

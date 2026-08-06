@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 220">
+<rect width="960" height="220" rx="36" fill="#07080b"/>
+<g transform="translate(42 34)">
+<path d="M18 104c22 14 46 20 73 17 27-3 49-14 67-34l-15-20c-17 16-35 26-55 28-20 2-39-4-55-15l-15 24Z" fill="#4169ff"/>
+<path d="M26 70c18-13 38-20 61-21 23-1 44 5 62 16l-16 19c-14-8-29-11-45-10-16 1-31 6-45 15L26 70Z" fill="#f7f7f2"/>
+<circle cx="134" cy="43" r="12" fill="#7894ff"/>
+</g>
+<text x="220" y="142" fill="#f7f7f2" font-family="Arial,Helvetica,sans-serif" font-size="92" font-weight="800" letter-spacing="-5">ShopSphere</text>
+</svg>
