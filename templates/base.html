@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,48 +12,30 @@
 
     <meta
         name="description"
-        content="ShopSphere premium joggers e-commerce store."
+        content="ShopSphere premium footwear e-commerce store."
     >
 
     <title>
-        {% block title %}
-            ShopSphere
-        {% endblock %}
+        {% block title %}ShopSphere{% endblock %}
     </title>
 
-    <!-- Main website styles -->
     <link
         rel="stylesheet"
         href="{% static 'css/style.css' %}"
     >
 
-    <!-- Page-specific styles -->
-        <link
-        rel="stylesheet"
-        href="{% static 'css/shopsphere-premium-theme.css' %}"
-    >
-
-    <link
-        rel="stylesheet"
-        href="{% static 'css/cinematic-brand-intro.css' %}"
-    >
-{% block extra_css %}
-    {% endblock %}
-
-    <!-- Global header styles must load last -->
     <link
         rel="stylesheet"
         href="{% static 'css/global.css' %}"
     >
-    <link
-       rel="stylesheet"
-       href="{% static 'css/password-toggle.css' %}"
-    >
+
+    {% block extra_css %}
+    {% endblock %}
 </head>
 
 <body>
     {% if messages %}
-        <div class="site-messages">
+        <div class="site-messages" aria-live="polite">
             {% for message in messages %}
                 <div
                     class="site-message site-message--{{ message.tags }}"
@@ -65,93 +47,668 @@
         </div>
     {% endif %}
 
-    <header class="site-header">
-        <a
-            href="{% url 'core:home' %}"
-            class="site-header__brand"
-        >
-            ShopSphere
-        </a>
 
+    <!-- ==================================================
+         GLOBAL COMMERCE HEADER
+    =================================================== -->
+
+    <header class="commerce-header" id="commerceHeader">
+
+        <!-- Top shopping bar -->
+        <div class="commerce-header__top">
+
+            <!-- Mobile menu -->
+            <button
+                type="button"
+                class="commerce-header__mobile-menu"
+                id="commerceMobileMenuButton"
+                aria-label="Open departments menu"
+                aria-controls="commerceDrawer"
+                aria-expanded="false"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+
+            <!-- Brand -->
+            <a
+                href="{% url 'core:home' %}"
+                class="commerce-header__brand"
+                aria-label="ShopSphere home"
+            >
+                <img
+                    src="{% static 'images/home-concept/shopsphere-intro-emblem.png' %}"
+                    alt="ShopSphere"
+                    class="commerce-header__brand-logo"
+                >
+            </a>
+
+
+            <!-- Delivery / location -->
+            <button
+                type="button"
+                class="commerce-header__location"
+                aria-label="Delivery location"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 21s7-5.3 7-12a7 7 0 1 0-14 0c0 6.7 7 12 7 12Z"></path>
+                    <circle cx="12" cy="9" r="2.5"></circle>
+                </svg>
+
+                <span>
+                    <small>Deliver to</small>
+                    <strong>Pakistan</strong>
+                </span>
+            </button>
+
+
+            <!-- Search -->
+            <form
+                class="commerce-search"
+                action="{% url 'products:product_list' %}"
+                method="get"
+                role="search"
+            >
+                <label
+                    for="commerceSearchCategory"
+                    class="sr-only"
+                >
+                    Search category
+                </label>
+
+                <select
+                    id="commerceSearchCategory"
+                    name="category"
+                    class="commerce-search__category"
+                >
+                    <option value="">All</option>
+                    <option value="running">Running</option>
+                    <option value="training">Training</option>
+                    <option value="lifestyle">Lifestyle</option>
+                    <option value="limited">Limited</option>
+                </select>
+
+                <label
+                    for="commerceSearchInput"
+                    class="sr-only"
+                >
+                    Search ShopSphere
+                </label>
+
+                <input
+                    id="commerceSearchInput"
+                    class="commerce-search__input"
+                    type="search"
+                    name="q"
+                    value="{{ request.GET.q|default:'' }}"
+                    placeholder="Search ShopSphere"
+                    autocomplete="off"
+                >
+
+                <button
+                    type="submit"
+                    class="commerce-search__submit"
+                    aria-label="Search"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="m20 20-3.5-3.5"></path>
+                    </svg>
+                </button>
+            </form>
+
+
+            <!-- Account -->
+            <div class="commerce-account">
+                <button
+                    type="button"
+                    class="commerce-account__trigger"
+                    id="commerceAccountTrigger"
+                    aria-expanded="false"
+                    aria-controls="commerceAccountMenu"
+                >
+                    <span>
+                        {% if request.user.is_authenticated %}
+                            Hello,
+                            {{ request.user.first_name|default:request.user.username }}
+                        {% else %}
+                            Hello, sign in
+                        {% endif %}
+                    </span>
+
+                    <strong>
+                        Account & Lists
+                        <i aria-hidden="true"></i>
+                    </strong>
+                </button>
+
+                <div
+                    class="commerce-account__menu"
+                    id="commerceAccountMenu"
+                    hidden
+                >
+                    {% if request.user.is_authenticated %}
+                        <div class="commerce-account__signed-in">
+                            <p>
+                                Signed in as
+                                <strong>
+                                    {{ request.user.first_name|default:request.user.username }}
+                                </strong>
+                            </p>
+                        </div>
+
+                        <a href="{% url 'accounts:profile' %}">
+                            Your Account
+                        </a>
+
+                        <a href="/orders/">
+                            Your Orders
+                        </a>
+
+                        <a href="{% url 'products:product_list' %}">
+                            Your Recommendations
+                        </a>
+
+                        <form
+                            method="post"
+                            action="{% url 'accounts:logout' %}"
+                            class="commerce-account__logout"
+                        >
+                            {% csrf_token %}
+
+                            <button type="submit">
+                                Sign Out
+                            </button>
+                        </form>
+                    {% else %}
+                        <a
+                            href="{% url 'accounts:login' %}"
+                            class="commerce-account__signin"
+                        >
+                            Sign In
+                        </a>
+
+                        <p class="commerce-account__new">
+                            New customer?
+                            <a href="{% url 'accounts:register' %}">
+                                Create your account
+                            </a>
+                        </p>
+
+                        <hr>
+
+                        <a href="{% url 'products:product_list' %}">
+                            Browse Products
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+
+            <!-- Orders -->
+            <a
+                href="/orders/"
+                class="commerce-header__orders"
+            >
+                <span>Returns</span>
+                <strong>& Orders</strong>
+            </a>
+
+
+            <!-- Cart -->
+            <a
+                href="{% url 'cart:cart_detail' %}"
+                class="commerce-header__cart"
+                aria-label="Cart, {{ global_cart_count|default:0 }} items"
+            >
+                <span class="commerce-header__cart-icon">
+                    <svg viewBox="0 0 32 28" aria-hidden="true">
+                        <path d="M2 3h4l3.2 14.2h15.9L29 8H8"></path>
+                        <circle cx="12" cy="23" r="2"></circle>
+                        <circle cx="24" cy="23" r="2"></circle>
+                    </svg>
+
+                    <strong class="commerce-header__cart-count">
+                        {{ global_cart_count|default:0 }}
+                    </strong>
+                </span>
+
+                <span class="commerce-header__cart-label">
+                    Cart
+                </span>
+            </a>
+        </div>
+
+
+        <!-- Secondary category nav -->
         <nav
-            class="site-header__navigation"
-            aria-label="Main navigation"
+            class="commerce-header__nav"
+            aria-label="Shop departments"
         >
-            <a href="{% url 'core:home' %}">
-                Home
+            <button
+                type="button"
+                class="commerce-header__all"
+                id="commerceAllButton"
+                aria-controls="commerceDrawer"
+                aria-expanded="false"
+            >
+                <span class="commerce-header__all-icon">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                </span>
+                All
+            </button>
+
+            <a href="{% url 'products:product_list' %}?sort=newest">
+                New Drops
+            </a>
+
+            <a href="{% url 'products:product_list' %}?category=running">
+                Running
+            </a>
+
+            <a href="{% url 'products:product_list' %}?category=training">
+                Training
+            </a>
+
+            <a href="{% url 'products:product_list' %}?category=lifestyle">
+                Lifestyle
+            </a>
+
+            <a href="{% url 'products:product_list' %}?category=limited">
+                Limited
+            </a>
+
+            <a href="{% url 'products:product_list' %}?sort=best_selling">
+                Best Sellers
             </a>
 
             <a href="{% url 'products:product_list' %}">
-                Shop
+                Today's Picks
             </a>
-
-            <a
-                href="{% url 'cart:cart_detail' %}"
-                class="site-header__cart"
-            >
-                Cart
-
-                <span>
-                    {{ global_cart_count }}
-                </span>
-            </a>
-
-            {% if request.user.is_authenticated %}
-                <a href="{% url 'accounts:profile' %}">
-                    Profile
-                </a>
-
-                <span class="site-header__customer">
-                    Hi,
-                    {{ request.user.first_name|default:request.user.username }}
-                </span>
-
-                <form
-                    method="post"
-                    action="{% url 'accounts:logout' %}"
-                    class="site-header__logout-form"
-                >
-                    {% csrf_token %}
-
-                    <button
-                        type="submit"
-                        class="site-header__logout-button"
-                    >
-                        Logout
-                    </button>
-                </form>
-            {% else %}
-                <a href="{% url 'accounts:login' %}">
-                    Login
-                </a>
-
-                <a
-                    href="{% url 'accounts:register' %}"
-                    class="site-header__register"
-                >
-                    Register
-                </a>
-            {% endif %}
         </nav>
     </header>
 
-    <main>
+
+    <!-- ==================================================
+         DEPARTMENTS DRAWER
+    =================================================== -->
+
+    <div
+        class="commerce-drawer"
+        id="commerceDrawer"
+        aria-hidden="true"
+    >
+        <button
+            type="button"
+            class="commerce-drawer__backdrop"
+            id="commerceDrawerBackdrop"
+            aria-label="Close departments menu"
+        ></button>
+
+        <aside
+            class="commerce-drawer__panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Shop departments"
+        >
+            <div class="commerce-drawer__customer">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4"></circle>
+                    <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"></path>
+                </svg>
+
+                <strong>
+                    {% if request.user.is_authenticated %}
+                        Hello,
+                        {{ request.user.first_name|default:request.user.username }}
+                    {% else %}
+                        Hello, sign in
+                    {% endif %}
+                </strong>
+
+                <button
+                    type="button"
+                    class="commerce-drawer__close"
+                    id="commerceDrawerClose"
+                    aria-label="Close departments menu"
+                >
+                    ×
+                </button>
+            </div>
+
+            <div class="commerce-drawer__scroll">
+
+                <section class="commerce-drawer__section">
+                    <h2>Shop by Department</h2>
+
+                    <a href="{% url 'products:product_list' %}?category=running">
+                        Running
+                        <span>›</span>
+                    </a>
+
+                    <a href="{% url 'products:product_list' %}?category=training">
+                        Training
+                        <span>›</span>
+                    </a>
+
+                    <a href="{% url 'products:product_list' %}?category=lifestyle">
+                        Lifestyle
+                        <span>›</span>
+                    </a>
+
+                    <a href="{% url 'products:product_list' %}?category=limited">
+                        Limited Edition
+                        <span>›</span>
+                    </a>
+
+                    <a href="{% url 'products:product_list' %}">
+                        See all products
+                        <span>›</span>
+                    </a>
+                </section>
+
+                <section class="commerce-drawer__section">
+                    <h2>Discover ShopSphere</h2>
+
+                    <a href="{% url 'products:product_list' %}?sort=newest">
+                        New Arrivals
+                    </a>
+
+                    <a href="{% url 'products:product_list' %}?sort=best_selling">
+                        Best Sellers
+                    </a>
+
+                    <a href="{% url 'products:product_list' %}">
+                        Deals & Offers
+                    </a>
+
+                    <a href="{% url 'core:home' %}">
+                        ShopSphere Home
+                    </a>
+                </section>
+
+                <section class="commerce-drawer__section">
+                    <h2>Help & Settings</h2>
+
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'accounts:profile' %}">
+                            Your Account
+                        </a>
+
+                        <a href="/orders/">
+                            Your Orders
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}">
+                            Sign In
+                        </a>
+
+                        <a href="{% url 'accounts:register' %}">
+                            Create Account
+                        </a>
+                    {% endif %}
+                </section>
+
+            </div>
+        </aside>
+    </div>
+
+
+    <!-- Mobile search row -->
+    <div class="commerce-mobile-search">
+        <form
+            action="{% url 'products:product_list' %}"
+            method="get"
+            role="search"
+        >
+            <input
+                type="search"
+                name="q"
+                value="{{ request.GET.q|default:'' }}"
+                placeholder="Search ShopSphere"
+                aria-label="Search ShopSphere"
+            >
+
+            <button
+                type="submit"
+                aria-label="Search"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-3.5-3.5"></path>
+                </svg>
+            </button>
+        </form>
+    </div>
+
+
+    <main id="mainContent">
         {% block content %}
         {% endblock %}
     </main>
 
+
+    <!-- ==================================================
+         GLOBAL COMMERCE FOOTER
+    =================================================== -->
+
+    <footer class="commerce-footer">
+        <a
+            href="#commerceHeader"
+            class="commerce-footer__back-top"
+        >
+            Back to top
+        </a>
+
+        <div class="commerce-footer__content">
+
+            <section>
+                <h2>Get to Know Us</h2>
+
+                <a href="{% url 'core:home' %}">
+                    ShopSphere
+                </a>
+
+                <a href="{% url 'products:product_list' %}">
+                    New Drops
+                </a>
+
+                <a href="{% url 'products:product_list' %}?sort=best_selling">
+                    Best Sellers
+                </a>
+            </section>
+
+            <section>
+                <h2>Shop With Us</h2>
+
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'accounts:profile' %}">
+                        Your Account
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">
+                        Your Account
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'cart:cart_detail' %}">
+                    Your Cart
+                </a>
+
+                <a href="/orders/">
+                    Your Orders
+                </a>
+            </section>
+
+            <section>
+                <h2>Shop Departments</h2>
+
+                <a href="{% url 'products:product_list' %}?category=running">
+                    Running
+                </a>
+
+                <a href="{% url 'products:product_list' %}?category=training">
+                    Training
+                </a>
+
+                <a href="{% url 'products:product_list' %}?category=lifestyle">
+                    Lifestyle
+                </a>
+
+                <a href="{% url 'products:product_list' %}?category=limited">
+                    Limited
+                </a>
+            </section>
+
+            <section>
+                <h2>Help</h2>
+
+                <a href="{% url 'products:product_list' %}">
+                    Find a Product
+                </a>
+
+                <a href="/orders/">
+                    Track an Order
+                </a>
+
+                <a href="{% url 'accounts:profile' %}">
+                    Account Settings
+                </a>
+            </section>
+
+        </div>
+
+        <div class="commerce-footer__bottom">
+            <a
+                href="{% url 'core:home' %}"
+                class="commerce-footer__brand"
+            >
+                <img
+                    src="{% static 'images/home-concept/shopsphere-intro-emblem.png' %}"
+                    alt="ShopSphere"
+                >
+            </a>
+
+            <p>
+                © {% now "Y" %} ShopSphere. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+
     <script src="{% static 'js/app.js' %}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const drawer = document.querySelector("#commerceDrawer");
+            const allButton = document.querySelector("#commerceAllButton");
+            const mobileButton = document.querySelector("#commerceMobileMenuButton");
+            const drawerClose = document.querySelector("#commerceDrawerClose");
+            const drawerBackdrop = document.querySelector("#commerceDrawerBackdrop");
+
+            const accountTrigger = document.querySelector("#commerceAccountTrigger");
+            const accountMenu = document.querySelector("#commerceAccountMenu");
+
+            const setDrawer = (open) => {
+                if (!drawer) return;
+
+                drawer.classList.toggle("is-open", open);
+                drawer.setAttribute("aria-hidden", String(!open));
+
+                allButton?.setAttribute("aria-expanded", String(open));
+                mobileButton?.setAttribute("aria-expanded", String(open));
+
+                document.body.classList.toggle(
+                    "commerce-drawer-open",
+                    open
+                );
+            };
+
+            allButton?.addEventListener(
+                "click",
+                () => setDrawer(true)
+            );
+
+            mobileButton?.addEventListener(
+                "click",
+                () => setDrawer(true)
+            );
+
+            drawerClose?.addEventListener(
+                "click",
+                () => setDrawer(false)
+            );
+
+            drawerBackdrop?.addEventListener(
+                "click",
+                () => setDrawer(false)
+            );
+
+            accountTrigger?.addEventListener(
+                "click",
+                (event) => {
+                    event.stopPropagation();
+
+                    const open = accountMenu?.hasAttribute("hidden");
+
+                    if (!accountMenu) return;
+
+                    if (open) {
+                        accountMenu.removeAttribute("hidden");
+                    } else {
+                        accountMenu.setAttribute("hidden", "");
+                    }
+
+                    accountTrigger.setAttribute(
+                        "aria-expanded",
+                        String(open)
+                    );
+                }
+            );
+
+            document.addEventListener(
+                "click",
+                (event) => {
+                    if (
+                        accountMenu
+                        && accountTrigger
+                        && !accountMenu.contains(event.target)
+                        && !accountTrigger.contains(event.target)
+                    ) {
+                        accountMenu.setAttribute("hidden", "");
+                        accountTrigger.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+                    }
+                }
+            );
+
+            document.addEventListener(
+                "keydown",
+                (event) => {
+                    if (event.key !== "Escape") return;
+
+                    setDrawer(false);
+
+                    if (accountMenu) {
+                        accountMenu.setAttribute("hidden", "");
+                    }
+
+                    accountTrigger?.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+                }
+            );
+        });
+    </script>
 
     {% block extra_js %}
     {% endblock %}
-    <script
-        src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"
-    ></script>
-
-    <script
-        src="{% static 'js/cinematic-brand-intro.js' %}"
-        defer
-    ></script>
 </body>
 </html>
-

@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ order.order_number }} | ShopSphere
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/orders.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+<section class="order-detail-page">
+    <nav class="order-detail-breadcrumb">
+        <a href="{% url 'orders:order_list' %}">
+            Your Orders
+        </a>
+        <span>/</span>
+        <strong>{{ order.order_number }}</strong>
+    </nav>
+
+    <header class="order-detail-head">
+        <div>
+            <p>Order details</p>
+            <h1>{{ order.order_number }}</h1>
+            <span>
+                Placed {{ order.created_at|date:"d M Y, g:i A" }}
+            </span>
+        </div>
+
+        <div class="order-status-pill">
+            {{ order.get_fulfillment_status_display }}
+        </div>
+    </header>
+
+    <div class="order-detail-layout">
+        <div class="order-detail-content">
+            <section class="order-detail-card">
+                <h2>Items</h2>
+
+                <div class="order-detail-items">
+                    {% for item in order.items.all %}
+                        <article>
+                            <div class="order-detail-item__media">
+                                {% if item.product and item.product.main_image %}
+                                    <img
+                                        src="{{ item.product.main_image.url }}"
+                                        alt="{{ item.product_name }}"
+                                    >
+                                {% else %}
+                                    <span>ShopSphere</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="order-detail-item__info">
+                                <p>{{ item.product_sku }}</p>
+                                <h3>{{ item.product_name }}</h3>
+
+                                <span>
+                                    {{ item.color_name }}
+                                    · Size {{ item.size }}
+                                    · Qty {{ item.quantity }}
+                                </span>
+
+                                <small>
+                                    Variant SKU: {{ item.variant_sku }}
+                                </small>
+                            </div>
+
+                            <strong>
+                                Rs. {{ item.line_total|floatformat:0 }}
+                            </strong>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="order-detail-card">
+                <h2>Delivery address</h2>
+
+                <div class="order-address">
+                    <strong>{{ order.recipient_name }}</strong>
+                    <span>{{ order.phone }}</span>
+
+                    {% if order.email %}
+                        <span>{{ order.email }}</span>
+                    {% endif %}
+
+                    <p>{{ order.full_delivery_address }}</p>
+
+                    {% if order.customer_note %}
+                        <small>
+                            Note: {{ order.customer_note }}
+                        </small>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+
+        <aside class="order-detail-summary">
+            <p>Order summary</p>
+
+            <div>
+                <span>Items</span>
+                <strong>{{ order.total_items }}</strong>
+            </div>
+
+            <div>
+                <span>Subtotal</span>
+                <strong>
+                    Rs. {{ order.subtotal|floatformat:0 }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Shipping</span>
+                <strong>
+                    {% if order.shipping_amount %}
+                        Rs. {{ order.shipping_amount|floatformat:0 }}
+                    {% else %}
+                        Free
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div>
+                <span>Payment</span>
+                <strong>
+                    {{ order.get_payment_method_display }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Payment status</span>
+                <strong>
+                    {{ order.get_payment_status_display }}
+                </strong>
+            </div>
+
+            <div class="order-detail-summary__total">
+                <span>Total</span>
+                <strong>
+                    Rs. {{ order.total|floatformat:0 }}
+                </strong>
+            </div>
+
+            {% if order.can_cancel %}
+                <form
+                    method="post"
+                    action="{% url 'orders:cancel_order' order.order_number %}"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="order-cancel-button"
+                        onclick="return confirm('Cancel this order and restore its stock?');"
+                    >
+                        Cancel order
+                    </button>
+                </form>
+            {% endif %}
+        </aside>
+    </div>
+</section>
+{% endblock %}

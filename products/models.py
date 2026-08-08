@@ -55,13 +55,70 @@ class Category(models.Model):
         return self.name
 
 
+class Brand(models.Model):
+    """Store a reusable footwear brand."""
+
+    name = models.CharField(
+        max_length=120,
+        unique=True,
+    )
+
+    slug = models.SlugField(
+        max_length=140,
+        unique=True,
+        blank=True,
+    )
+
+    description = models.TextField(
+        blank=True,
+    )
+
+    logo = models.ImageField(
+        upload_to="brands/",
+        blank=True,
+        null=True,
+    )
+
+    is_active = models.BooleanField(
+        default=True,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = ["name"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
-    """Represent a jogger or sneaker available in ShopSphere."""
+    """Represent a footwear product available in ShopSphere."""
 
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
         related_name="products",
+    )
+
+    brand = models.ForeignKey(
+        Brand,
+        on_delete=models.PROTECT,
+        related_name="products",
+        blank=True,
+        null=True,
     )
 
     name = models.CharField(
@@ -266,4 +323,158 @@ class ProductVariant(models.Model):
         return (
             f"{self.product.name} — "
             f"{self.size} / {self.color_name}"
+        )
+
+
+class ProductAttribute(models.Model):
+    """
+    Define a reusable, admin-managed product facet.
+
+    Examples:
+    Gender, Material, Closure Type, Shoe Width, Purpose.
+    """
+
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+    )
+
+    slug = models.SlugField(
+        max_length=120,
+        unique=True,
+        blank=True,
+    )
+
+    description = models.CharField(
+        max_length=220,
+        blank=True,
+    )
+
+    is_filterable = models.BooleanField(
+        default=True,
+        help_text="Show this attribute in catalogue filters.",
+    )
+
+    is_visible = models.BooleanField(
+        default=True,
+        help_text="Show this attribute on product detail pages.",
+    )
+
+    is_active = models.BooleanField(
+        default=True,
+    )
+
+    display_order = models.PositiveSmallIntegerField(
+        default=0,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = [
+            "display_order",
+            "name",
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class ProductAttributeValue(models.Model):
+    """
+    Assign one or more values of an attribute to a product.
+
+    Multiple rows make multi-value facets possible, for example:
+    Purpose = Running, Walking, Everyday.
+    """
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="attribute_values",
+    )
+
+    attribute = models.ForeignKey(
+        ProductAttribute,
+        on_delete=models.CASCADE,
+        related_name="values",
+    )
+
+    value = models.CharField(
+        max_length=160,
+    )
+
+    display_order = models.PositiveSmallIntegerField(
+        default=0,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        ordering = [
+            "attribute__display_order",
+            "display_order",
+            "value",
+        ]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "product",
+                    "attribute",
+                    "value",
+                ],
+                name="unique_product_attribute_value",
+            )
+        ]
+
+        indexes = [
+            models.Index(
+                fields=[
+                    "attribute",
+                    "value",
+                ],
+                name="prod_attr_value_idx",
+            ),
+            models.Index(
+                fields=[
+                    "product",
+                    "attribute",
+                ],
+                name="prod_attr_product_idx",
+            ),
+        ]
+
+    def clean(self):
+        self.value = self.value.strip()
+
+        if not self.value:
+            raise ValidationError(
+                {
+                    "value": "Attribute value cannot be blank."
+                }
+            )
+
+    def save(self, *args, **kwargs):
+        self.value = self.value.strip()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return (
+            f"{self.product.name} — "
+            f"{self.attribute.name}: {self.value}"
         )

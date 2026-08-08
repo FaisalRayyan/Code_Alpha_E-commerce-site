@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Checkout | ShopSphere
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/orders.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+<section class="checkout-page">
+    <header class="checkout-head">
+        <div>
+            <p>Secure checkout</p>
+            <h1>Complete your order.</h1>
+            <span>
+                Current price and stock are verified again when you place the order.
+            </span>
+        </div>
+
+        <a href="{% url 'cart:cart_detail' %}">
+            ← Return to cart
+        </a>
+    </header>
+
+    <form
+        method="post"
+        class="checkout-layout"
+        novalidate
+    >
+        {% csrf_token %}
+
+        <div class="checkout-content">
+            <section class="checkout-card">
+                <div class="checkout-card__head">
+                    <span>01</span>
+                    <div>
+                        <p>Delivery</p>
+                        <h2>Shipping address</h2>
+                    </div>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="checkout-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="checkout-fields checkout-fields--two">
+                    <label>
+                        <span>{{ form.recipient_name.label }}</span>
+                        {{ form.recipient_name }}
+                        {{ form.recipient_name.errors }}
+                    </label>
+
+                    <label>
+                        <span>Phone</span>
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                    </label>
+                </div>
+
+                <div class="checkout-fields">
+                    <label>
+                        <span>Email</span>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </label>
+
+                    <label>
+                        <span>{{ form.address_line_1.label }}</span>
+                        {{ form.address_line_1 }}
+                        {{ form.address_line_1.errors }}
+                    </label>
+
+                    <label>
+                        <span>{{ form.address_line_2.label }}</span>
+                        {{ form.address_line_2 }}
+                        {{ form.address_line_2.errors }}
+                    </label>
+                </div>
+
+                <div class="checkout-fields checkout-fields--two">
+                    <label>
+                        <span>City</span>
+                        {{ form.city }}
+                        {{ form.city.errors }}
+                    </label>
+
+                    <label>
+                        <span>Province / region</span>
+                        {{ form.province }}
+                        {{ form.province.errors }}
+                    </label>
+
+                    <label>
+                        <span>Postal code</span>
+                        {{ form.postal_code }}
+                        {{ form.postal_code.errors }}
+                    </label>
+
+                    <label>
+                        <span>Landmark</span>
+                        {{ form.landmark }}
+                        {{ form.landmark.errors }}
+                    </label>
+                </div>
+
+                <div class="checkout-fields">
+                    <label>
+                        <span>{{ form.customer_note.label }}</span>
+                        {{ form.customer_note }}
+                        {{ form.customer_note.errors }}
+                    </label>
+                </div>
+            </section>
+
+            <section class="checkout-card">
+                <div class="checkout-card__head">
+                    <span>02</span>
+                    <div>
+                        <p>Payment</p>
+                        <h2>Choose payment method</h2>
+                    </div>
+                </div>
+
+                <div class="checkout-payment">
+                    {% for radio in form.payment_method %}
+                        <label class="checkout-payment__option">
+                            {{ radio.tag }}
+                            <span>
+                                <strong>{{ radio.choice_label }}</strong>
+                                <small>
+                                    Pay when your ShopSphere order is delivered.
+                                </small>
+                            </span>
+                        </label>
+                    {% endfor %}
+
+                    {{ form.payment_method.errors }}
+                </div>
+            </section>
+        </div>
+
+        <aside class="checkout-summary">
+            <p class="checkout-summary__eyebrow">
+                Order summary
+            </p>
+
+            <h2>
+                {{ cart.total_items }}
+                item{{ cart.total_items|pluralize }}
+            </h2>
+
+            <div class="checkout-summary__items">
+                {% for item in cart_items %}
+                    <article>
+                        <a href="{% url 'products:product_detail' item.product.slug %}">
+                            {% if item.product.main_image %}
+                                <img
+                                    src="{{ item.product.main_image.url }}"
+                                    alt="{{ item.product.name }}"
+                                >
+                            {% else %}
+                                <span>Image</span>
+                            {% endif %}
+                        </a>
+
+                        <div>
+                            <strong>{{ item.product.name }}</strong>
+                            <small>
+                                {{ item.variant.color_name }}
+                                · Size {{ item.variant.size }}
+                                · Qty {{ item.quantity }}
+                            </small>
+                            <span>
+                                Rs. {{ item.line_total|floatformat:0 }}
+                            </span>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            <div class="checkout-summary__rows">
+                <div>
+                    <span>Subtotal</span>
+                    <strong>
+                        Rs. {{ cart.subtotal|floatformat:0 }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Shipping</span>
+                    <strong>Free</strong>
+                </div>
+            </div>
+
+            <div class="checkout-summary__total">
+                <span>Total</span>
+                <strong>
+                    Rs. {{ estimated_total|floatformat:0 }}
+                </strong>
+            </div>
+
+            <button
+                type="submit"
+                class="checkout-place-order"
+            >
+                Place order
+            </button>
+
+            <p class="checkout-summary__note">
+                Placing the order creates a Cash on Delivery order
+                and deducts the confirmed stock.
+            </p>
+        </aside>
+    </form>
+</section>
+{% endblock %}

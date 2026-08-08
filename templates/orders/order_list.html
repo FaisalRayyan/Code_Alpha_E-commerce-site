@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Your Orders | ShopSphere
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/orders.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+<section class="orders-page">
+    <header class="orders-head">
+        <div>
+            <p>Your account</p>
+            <h1>Your Orders</h1>
+            <span>
+                Review current and previous ShopSphere orders.
+            </span>
+        </div>
+
+        <a href="{% url 'products:product_list' %}">
+            Continue shopping
+        </a>
+    </header>
+
+    {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+                <article class="order-card">
+                    <header>
+                        <div>
+                            <small>Order placed</small>
+                            <strong>
+                                {{ order.created_at|date:"d M Y, g:i A" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <small>Total</small>
+                            <strong>
+                                Rs. {{ order.total|floatformat:0 }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <small>Order #</small>
+                            <strong>{{ order.order_number }}</strong>
+                        </div>
+                    </header>
+
+                    <div class="order-card__body">
+                        <div class="order-card__status">
+                            <span>
+                                {{ order.get_fulfillment_status_display }}
+                            </span>
+
+                            <small>
+                                {{ order.get_payment_method_display }}
+                                ·
+                                {{ order.get_payment_status_display }}
+                            </small>
+                        </div>
+
+                        <div class="order-card__items">
+                            {% for item in order.items.all|slice:":4" %}
+                                <div>
+                                    {% if item.product and item.product.main_image %}
+                                        <img
+                                            src="{{ item.product.main_image.url }}"
+                                            alt="{{ item.product_name }}"
+                                        >
+                                    {% else %}
+                                        <span>SS</span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <a
+                            href="{% url 'orders:order_detail' order.order_number %}"
+                            class="order-card__button"
+                        >
+                            View order details
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="orders-empty">
+            <span>00</span>
+            <p>No orders yet</p>
+            <h2>
+                Your completed ShopSphere orders will appear here.
+            </h2>
+
+            <a href="{% url 'products:product_list' %}">
+                Browse footwear
+            </a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

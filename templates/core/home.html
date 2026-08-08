@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    ShopSphere | Move Different
+    ShopSphere | Premium Footwear
 {% endblock %}
 
 {% block extra_css %}
@@ -12,676 +12,307 @@
     >
 {% endblock %}
 
+
 {% block content %}
-<div class="ss-film" id="ssFilm">
+<div class="shop-home">
 
-    <!-- =====================================
-         SCENE 00 â€” CINEMATIC INTRO
-    ====================================== -->
+    <!-- ==================================================
+         STATIC PRODUCT HERO
+         No video. No loader. No GSAP. No scroll animation.
+    =================================================== -->
 
-    <div
-        class="ss-intro"
-        id="ssIntro"
-        aria-hidden="true"
-    >
-        <div class="ss-intro__flash"></div>
+    <section class="shop-home__hero">
+        <div class="shop-home__hero-copy">
+            <p class="shop-home__eyebrow">
+                SHOPSPHERE FOOTWEAR
+            </p>
 
-        <div class="ss-intro__grid"></div>
+            <h1>
+                Find your
+                <span>next pair.</span>
+            </h1>
 
-        <div class="ss-intro__orb ss-intro__orb--blue"></div>
-        <div class="ss-intro__orb ss-intro__orb--orange"></div>
-        <div class="ss-intro__orb ss-intro__orb--violet"></div>
+            <p class="shop-home__hero-text">
+                Performance, training and everyday footwear selected
+                for comfort, movement and modern daily wear.
+            </p>
 
-        <div class="ss-intro__frame">
-            <div class="ss-intro__topline">
-                <span>ShopSphere</span>
-                <span>Motion System 01</span>
-            </div>
+            <div class="shop-home__hero-actions">
+                <a
+                    href="{% url 'products:product_list' %}"
+                    class="shop-home__primary-link"
+                >
+                    Shop all footwear
+                </a>
 
-            <div class="ss-intro__center">
-                <div class="ss-intro__mark-wrap">
-                    <div class="ss-intro__ring"></div>
-
-                    <img
-                        src="{% static 'images/brand/shopsphere-mark.svg' %}"
-                        alt=""
-                        class="ss-intro__mark"
-                    >
-                </div>
-
-                <div class="ss-intro__wordmark-wrap">
-                    <h1 class="ss-intro__wordmark">
-                        ShopSphere
-                    </h1>
-                </div>
-
-                <p class="ss-intro__copy">
-                    Movement begins before the first step.
-                </p>
-            </div>
-
-            <div class="ss-intro__bottom">
-                <div class="ss-intro__progress">
-                    <span id="ssProgressBar"></span>
-                </div>
-
-                <div class="ss-intro__progress-meta">
-                    <span>Building your movement experience</span>
-
-                    <strong id="ssProgressNumber">
-                        000
-                    </strong>
-                </div>
+                <a
+                    href="{% url 'products:product_list' %}?sort=newest"
+                    class="shop-home__secondary-link"
+                >
+                    New arrivals
+                </a>
             </div>
         </div>
-    </div>
+
+        <div class="shop-home__hero-products" aria-label="Featured ShopSphere footwear">
+            {% if featured_products %}
+                {% for product in featured_products|slice:":3" %}
+                    <a
+                        href="{% url 'products:product_detail' product.slug %}"
+                        class="shop-home__hero-product shop-home__hero-product--{{ forloop.counter }}"
+                    >
+                        <span class="shop-home__hero-product-label">
+                            {% if product.is_new_arrival %}
+                                New arrival
+                            {% elif product.is_best_seller %}
+                                Best seller
+                            {% else %}
+                                {{ product.category.name }}
+                            {% endif %}
+                        </span>
+
+                        {% if product.main_image %}
+                            <img
+                                src="{{ product.main_image.url }}"
+                                alt="{{ product.name }}"
+                                {% if forloop.first %}
+                                    fetchpriority="high"
+                                {% else %}
+                                    loading="lazy"
+                                {% endif %}
+                            >
+                        {% else %}
+                            {% if forloop.counter == 1 %}
+                                <img
+                                    src="{% static 'images/products/real/motion-runner-pro.webp' %}"
+                                    alt="{{ product.name }}"
+                                    fetchpriority="high"
+                                >
+                            {% elif forloop.counter == 2 %}
+                                <img
+                                    src="{% static 'images/products/real/terrain-flow-pro.webp' %}"
+                                    alt="{{ product.name }}"
+                                    loading="lazy"
+                                >
+                            {% else %}
+                                <img
+                                    src="{% static 'images/products/real/urban-elevate-pro.webp' %}"
+                                    alt="{{ product.name }}"
+                                    loading="lazy"
+                                >
+                            {% endif %}
+                        {% endif %}
+
+                        <span class="shop-home__hero-product-name">
+                            {{ product.name }}
+                        </span>
+
+                        <strong>
+                            Rs. {{ product.selling_price|floatformat:0 }}
+                        </strong>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <a
+                    href="{% url 'products:product_list' %}"
+                    class="shop-home__hero-product shop-home__hero-product--1"
+                >
+                    <span class="shop-home__hero-product-label">
+                        Running
+                    </span>
+
+                    <img
+                        src="{% static 'images/products/real/motion-runner-pro.webp' %}"
+                        alt="Motion Runner Pro"
+                        fetchpriority="high"
+                    >
+
+                    <span class="shop-home__hero-product-name">
+                        Motion Runner Pro
+                    </span>
+                </a>
+
+                <a
+                    href="{% url 'products:product_list' %}"
+                    class="shop-home__hero-product shop-home__hero-product--2"
+                >
+                    <span class="shop-home__hero-product-label">
+                        Training
+                    </span>
+
+                    <img
+                        src="{% static 'images/products/real/terrain-flow-pro.webp' %}"
+                        alt="Terrain Flow Pro"
+                    >
+
+                    <span class="shop-home__hero-product-name">
+                        Terrain Flow Pro
+                    </span>
+                </a>
+
+                <a
+                    href="{% url 'products:product_list' %}"
+                    class="shop-home__hero-product shop-home__hero-product--3"
+                >
+                    <span class="shop-home__hero-product-label">
+                        Lifestyle
+                    </span>
+
+                    <img
+                        src="{% static 'images/products/real/urban-elevate-pro.webp' %}"
+                        alt="Urban Elevate Pro"
+                    >
+
+                    <span class="shop-home__hero-product-name">
+                        Urban Elevate Pro
+                    </span>
+                </a>
+            {% endif %}
+        </div>
+    </section>
 
 
-    <!-- =====================================
-         SCENE 01 â€” BRAND PORTAL HERO
-    ====================================== -->
+    <!-- ==================================================
+         QUICK SHOP LINKS
+    =================================================== -->
 
     <section
-        class="ss-hero"
-        id="ssHero"
+        class="shop-home__quick"
+        aria-label="ShopSphere shopping benefits"
     >
-        <video
-            class="ss-hero__video"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-        >
-            <source
-                src="{% static 'videos/hero/hero-ambient.mp4' %}"
-                type="video/mp4"
-            >
-        </video>
+        <a href="{% url 'products:product_list' %}?sort=newest">
+            <strong>New drops</strong>
+            <span>See the latest footwear</span>
+        </a>
 
-        <div class="ss-hero__gradient"></div>
-        <div class="ss-hero__grain"></div>
-        <div class="ss-hero__grid"></div>
+        <a href="{% url 'products:product_list' %}?sort=best_selling">
+            <strong>Best sellers</strong>
+            <span>Shop customer favourites</span>
+        </a>
 
-        <div
-            class="ss-hero__orb ss-hero__orb--blue"
-            data-parallax="0.5"
-        ></div>
+        <a href="{% url 'products:product_list' %}">
+            <strong>All footwear</strong>
+            <span>Browse the complete catalogue</span>
+        </a>
 
-        <div
-            class="ss-hero__orb ss-hero__orb--orange"
-            data-parallax="0.8"
-        ></div>
+        <a href="{% url 'cart:cart_detail' %}">
+            <strong>Your cart</strong>
+            <span>{{ global_cart_count|default:0 }} item{{ global_cart_count|default:0|pluralize }}</span>
+        </a>
+    </section>
 
-        <div
-            class="ss-hero__orb ss-hero__orb--violet"
-            data-parallax="0.35"
-        ></div>
 
-        <div class="ss-hero__content">
+    <!-- ==================================================
+         SHOP BY CATEGORY
+    =================================================== -->
 
-            <!-- Left copy -->
-
-            <div class="ss-hero__copy">
-                <div class="ss-hero__edition">
-                    <span>01</span>
-                    <span>ShopSphere Motion Collection</span>
-                </div>
-
-                <h1 class="ss-hero__title">
-                    <span class="ss-title-line">
-                        Move
-                    </span>
-
-                    <span class="ss-title-line ss-title-line--outline">
-                        Different
-                    </span>
-
-                    <span class="ss-title-line">
-                        Every Day.
-                    </span>
-                </h1>
-
-                <p class="ss-hero__description">
-                    Premium footwear built around movement,
-                    comfort and modern everyday performance.
-                </p>
-
-                <div class="ss-hero__actions">
-                    <a
-                        href="{% url 'products:product_list' %}"
-                        class="ss-button ss-button--primary"
-                    >
-                        <span>Explore Collection</span>
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path d="M5 12h14"></path>
-                            <path d="m13 6 6 6-6 6"></path>
-                        </svg>
-                    </a>
-
-                    <a
-                        href="#ssProductStory"
-                        class="ss-button ss-button--glass"
-                    >
-                        Discover the motion
-                    </a>
-                </div>
+    <section class="shop-home__section">
+        <header class="shop-home__section-header">
+            <div>
+                <p>Shop by movement</p>
+                <h2>Choose your category</h2>
             </div>
 
+            <a href="{% url 'products:product_list' %}">
+                View all categories
+            </a>
+        </header>
 
-            <!-- Animated central portal -->
-
-            <div
-                class="ss-portal"
-                id="ssPortal"
+        <div class="shop-home__category-grid">
+            <a
+                href="{% url 'products:product_list' %}?category=running"
+                class="shop-home__category-card"
             >
-                <div class="ss-portal__backdrop"></div>
-
-                <div class="ss-portal__orbit ss-portal__orbit--outer">
-                    <span></span>
-                </div>
-
-                <div class="ss-portal__orbit ss-portal__orbit--middle">
-                    <span></span>
-                </div>
-
-                <div class="ss-portal__orbit ss-portal__orbit--inner">
-                    <span></span>
-                </div>
-
-                <div class="ss-portal__core">
+                <div class="shop-home__category-image">
                     <img
-                        src="{% static 'images/brand/shopsphere-mark.svg' %}"
-                        alt="ShopSphere"
-                        class="ss-portal__mark"
+                        src="{% static 'images/products/real/motion-runner-pro.webp' %}"
+                        alt="Running footwear"
+                        loading="lazy"
                     >
                 </div>
 
-                <article class="ss-float-card ss-float-card--one">
-                    <span>01</span>
-
-                    <div>
-                        <strong>Performance</strong>
-                        <small>Responsive movement</small>
-                    </div>
-                </article>
-
-                <article class="ss-float-card ss-float-card--two">
-                    <span>02</span>
-
-                    <div>
-                        <strong>Comfort</strong>
-                        <small>Everyday cushioning</small>
-                    </div>
-                </article>
-
-                <article class="ss-float-card ss-float-card--three">
-                    <span>03</span>
-
-                    <div>
-                        <strong>Identity</strong>
-                        <small>Built to move different</small>
-                    </div>
-                </article>
-
-                <div class="ss-portal__caption">
-                    <span>Introducing</span>
-                    <strong>ShopSphere Motion</strong>
+                <div>
+                    <span>Performance</span>
+                    <h3>Running</h3>
+                    <p>Responsive footwear built for forward movement.</p>
                 </div>
-            </div>
-        </div>
+            </a>
 
+            <a
+                href="{% url 'products:product_list' %}?category=training"
+                class="shop-home__category-card"
+            >
+                <div class="shop-home__category-image">
+                    <img
+                        src="{% static 'images/products/real/terrain-flow-pro.webp' %}"
+                        alt="Training footwear"
+                        loading="lazy"
+                    >
+                </div>
 
-        <!-- Hero footer -->
+                <div>
+                    <span>Stability</span>
+                    <h3>Training</h3>
+                    <p>Balanced support for gym sessions and active days.</p>
+                </div>
+            </a>
 
-        <div class="ss-hero__footer">
-            <div>
-                <span>Collection</span>
-                <strong>Motion Series 01</strong>
-            </div>
+            <a
+                href="{% url 'products:product_list' %}?category=lifestyle"
+                class="shop-home__category-card"
+            >
+                <div class="shop-home__category-image">
+                    <img
+                        src="{% static 'images/products/real/urban-elevate-pro.webp' %}"
+                        alt="Lifestyle footwear"
+                        loading="lazy"
+                    >
+                </div>
 
-            <div>
-                <span>Designed for</span>
-                <strong>Modern movement</strong>
-            </div>
-
-            <a href="#ssProductStory" class="ss-scroll">
-                <span>Scroll to enter</span>
-                <i></i>
+                <div>
+                    <span>Everyday</span>
+                    <h3>Lifestyle</h3>
+                    <p>Clean silhouettes designed for daily comfort.</p>
+                </div>
             </a>
         </div>
     </section>
 
 
-    <!-- =====================================
-         SCENE 02 — PRODUCT STORY
-    ====================================== -->
+    <!-- ==================================================
+         FEATURED PRODUCTS
+    =================================================== -->
 
-    <section
-        class="ss-product-story"
-        id="ssProductStory"
-    >
-        <div class="ss-product-story__sticky">
-            <div class="ss-product-story__grid"></div>
-            <div class="ss-product-story__grain"></div>
-            <div class="ss-product-story__glow ss-product-story__glow--blue"></div>
-            <div class="ss-product-story__glow ss-product-story__glow--orange"></div>
-
-            <div class="ss-product-story__word" aria-hidden="true">
-                ENGINEERED
-            </div>
-
-            <header class="ss-product-story__header">
-                <div>
-                    <span>02</span>
-                    <p>Product engineering</p>
-                </div>
-
-                <div class="ss-product-story__counter">
-                    <strong id="ssStoryCounter">01</strong>
-                    <span>/ 04</span>
-                </div>
-            </header>
-
-            <div class="ss-product-story__layout">
-                <div class="ss-product-story__copy">
-                    <article
-                        class="ss-story-step ss-story-step--intro is-active"
-                        data-story-step="0"
-                    >
-                        <p>One product. Four movement systems.</p>
-
-                        <h2>
-                            Designed around
-                            <span>the way you move.</span>
-                        </h2>
-
-                        <p class="ss-story-step__description">
-                            ShopSphere combines a flexible upper,
-                            responsive cushioning and controlled grip
-                            inside one lightweight performance profile.
-                        </p>
-                    </article>
-
-                    <article
-                        class="ss-story-step"
-                        data-story-step="1"
-                    >
-                        <p>01 — Engineered upper</p>
-
-                        <h2>
-                            Flexible where
-                            <span>movement begins.</span>
-                        </h2>
-
-                        <p class="ss-story-step__description">
-                            A breathable structure follows natural foot
-                            movement while maintaining a secure fit.
-                        </p>
-                    </article>
-
-                    <article
-                        class="ss-story-step"
-                        data-story-step="2"
-                    >
-                        <p>02 — Responsive cushioning</p>
-
-                        <h2>
-                            Softer landings.
-                            <span>Faster recovery.</span>
-                        </h2>
-
-                        <p class="ss-story-step__description">
-                            Balanced cushioning absorbs everyday impact
-                            without making the shoe feel heavy or slow.
-                        </p>
-                    </article>
-
-                    <article
-                        class="ss-story-step"
-                        data-story-step="3"
-                    >
-                        <p>03 — Controlled traction</p>
-
-                        <h2>
-                            Grip that keeps
-                            <span>momentum stable.</span>
-                        </h2>
-
-                        <p class="ss-story-step__description">
-                            A mapped outsole supports confident movement
-                            across training, walking and daily surfaces.
-                        </p>
-                    </article>
-
-                    <div class="ss-product-story__actions">
-                        <a
-                            href="{% url 'products:product_list' %}"
-                            class="ss-button ss-button--primary"
-                        >
-                            <span>Explore the collection</span>
-
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M5 12h14"></path>
-                                <path d="m13 6 6 6-6 6"></path>
-                            </svg>
-                        </a>
-
-                        <span>
-                            Scroll to inspect each layer
-                        </span>
-                    </div>
-                </div>
-
-                <div
-                    class="ss-product-story__visual"
-                    id="ssStoryVisual"
-                >
-                    <div class="ss-story-orbit ss-story-orbit--outer"></div>
-                    <div class="ss-story-orbit ss-story-orbit--inner"></div>
-                    <div class="ss-story-platform"></div>
-
-                    <img
-                        src="{% static 'images/products/hero-jogger.svg' %}"
-                        alt="ShopSphere performance footwear engineering"
-                        class="ss-story-shoe"
-                        id="ssStoryShoe"
-                    >
-
-                    <span
-                        class="ss-story-hotspot ss-story-hotspot--upper"
-                        data-story-hotspot="1"
-                    >
-                        <i></i>
-                        <b>Upper</b>
-                    </span>
-
-                    <span
-                        class="ss-story-hotspot ss-story-hotspot--cushion"
-                        data-story-hotspot="2"
-                    >
-                        <i></i>
-                        <b>Cushion</b>
-                    </span>
-
-                    <span
-                        class="ss-story-hotspot ss-story-hotspot--grip"
-                        data-story-hotspot="3"
-                    >
-                        <i></i>
-                        <b>Grip</b>
-                    </span>
-
-                    <figure
-                        class="ss-story-detail ss-story-detail--upper"
-                        data-story-detail="1"
-                    >
-                        <img
-                            src="{% static 'images/products/jogger-closeup-upper.svg' %}"
-                            alt="ShopSphere engineered upper detail"
-                        >
-
-                        <figcaption>
-                            <span>Material system 01</span>
-                            <strong>Breathable flexibility</strong>
-                        </figcaption>
-                    </figure>
-
-                    <figure
-                        class="ss-story-detail ss-story-detail--cushion"
-                        data-story-detail="2"
-                    >
-                        <img
-                            src="{% static 'images/products/jogger-angle-side.svg' %}"
-                            alt="ShopSphere cushioning profile"
-                        >
-
-                        <figcaption>
-                            <span>Impact system 02</span>
-                            <strong>Responsive cushioning</strong>
-                        </figcaption>
-                    </figure>
-
-                    <figure
-                        class="ss-story-detail ss-story-detail--grip"
-                        data-story-detail="3"
-                    >
-                        <img
-                            src="{% static 'images/products/jogger-closeup-sole.svg' %}"
-                            alt="ShopSphere outsole grip detail"
-                        >
-
-                        <figcaption>
-                            <span>Traction system 03</span>
-                            <strong>Controlled grip</strong>
-                        </figcaption>
-                    </figure>
-                </div>
-            </div>
-
-            <footer class="ss-product-story__footer">
-                <div class="ss-product-story__progress">
-                    <span id="ssStoryProgress"></span>
-                </div>
-
-                <div class="ss-product-story__labels">
-                    <span class="is-active" data-story-label="0">Overview</span>
-                    <span data-story-label="1">Upper</span>
-                    <span data-story-label="2">Cushioning</span>
-                    <span data-story-label="3">Grip</span>
-                </div>
-            </footer>
-        </div>
-    </section>
-
-    <!-- =====================================
-         SCENE 03 — COLORWAYS
-    ====================================== -->
-
-    <section
-        class="ss-colorways"
-        id="ssColorways"
-        aria-labelledby="ssColorwaysTitle"
-    >
-        <div class="ss-colorways__ambient"></div>
-        <div class="ss-colorways__mesh"></div>
-
-        <header class="ss-colorways__header">
-            <div class="ss-colorways__number">
-                <span>03</span>
-                <i></i>
-            </div>
-
+    <section class="shop-home__section shop-home__section--products">
+        <header class="shop-home__section-header">
             <div>
-                <p>Color changes the energy</p>
-
-                <h2 id="ssColorwaysTitle">
-                    One silhouette.
-                    <span>Three identities.</span>
-                </h2>
+                <p>Featured selection</p>
+                <h2>Products worth checking out</h2>
             </div>
-        </header>
-
-        <div
-            class="ss-colorways__stage"
-            id="ssColorwayStage"
-        >
-            <div class="ss-colorways__ring ss-colorways__ring--one"></div>
-            <div class="ss-colorways__ring ss-colorways__ring--two"></div>
-
-            <p class="ss-colorways__giant-word" aria-hidden="true">
-                MOTION
-            </p>
-
-            <div class="ss-colorways__product">
-                <div class="ss-colorways__shadow"></div>
-
-                <img
-                    src="{% static 'images/products/jogger-colorway-blue.svg' %}"
-                    alt="ShopSphere electric blue performance shoe"
-                    id="ssColorwayShoe"
-                >
-            </div>
-
-            <aside class="ss-colorways__details">
-                <p id="ssColorwayIndex">01 / 03</p>
-
-                <h3 id="ssColorwayName">
-                    Electric Motion
-                </h3>
-
-                <span id="ssColorwayMood">
-                    Focused energy for fast everyday movement.
-                </span>
-
-                <dl>
-                    <div>
-                        <dt>Finish</dt>
-                        <dd id="ssColorwayFinish">Electric Blue</dd>
-                    </div>
-
-                    <div>
-                        <dt>Designed for</dt>
-                        <dd id="ssColorwayUse">Running & daily wear</dd>
-                    </div>
-                </dl>
-            </aside>
-        </div>
-
-        <div
-            class="ss-colorways__selector"
-            role="tablist"
-            aria-label="Choose a ShopSphere colorway"
-        >
-            <button
-                type="button"
-                class="ss-colorway-option is-active"
-                role="tab"
-                aria-selected="true"
-                data-colorway-index="01 / 03"
-                data-colorway-name="Electric Motion"
-                data-colorway-mood="Focused energy for fast everyday movement."
-                data-colorway-finish="Electric Blue"
-                data-colorway-use="Running & daily wear"
-                data-colorway-image="{% static 'images/products/jogger-colorway-blue.svg' %}"
-                data-colorway-accent="#4169ff"
-                data-colorway-secondary="#69dcff"
-            >
-                <i style="--swatch: #4169ff;"></i>
-
-                <span>
-                    <strong>Electric Blue</strong>
-                    <small>Performance</small>
-                </span>
-            </button>
-
-            <button
-                type="button"
-                class="ss-colorway-option"
-                role="tab"
-                aria-selected="false"
-                data-colorway-index="02 / 03"
-                data-colorway-name="Cloud Form"
-                data-colorway-mood="A clean neutral profile designed for flexible styling."
-                data-colorway-finish="Cloud White"
-                data-colorway-use="Lifestyle & travel"
-                data-colorway-image="{% static 'images/products/jogger-colorway-white.svg' %}"
-                data-colorway-accent="#d8deea"
-                data-colorway-secondary="#ffffff"
-            >
-                <i style="--swatch: #eef1f7;"></i>
-
-                <span>
-                    <strong>Cloud White</strong>
-                    <small>Lifestyle</small>
-                </span>
-            </button>
-
-            <button
-                type="button"
-                class="ss-colorway-option"
-                role="tab"
-                aria-selected="false"
-                data-colorway-index="03 / 03"
-                data-colorway-name="Volt Identity"
-                data-colorway-mood="High-visibility color built for expressive movement."
-                data-colorway-finish="Volt Neon"
-                data-colorway-use="Training & statement wear"
-                data-colorway-image="{% static 'images/products/jogger-colorway-neon.svg' %}"
-                data-colorway-accent="#c7ff36"
-                data-colorway-secondary="#f4ff9f"
-            >
-                <i style="--swatch: #c7ff36;"></i>
-
-                <span>
-                    <strong>Volt Neon</strong>
-                    <small>Training</small>
-                </span>
-            </button>
-        </div>
-    </section>
-
-
-    <!-- =====================================
-         SCENE 04 — FEATURED PRODUCTS
-    ====================================== -->
-
-    <section
-        class="ss-featured"
-        id="ssFeatured"
-        aria-labelledby="ssFeaturedTitle"
-    >
-        <header class="ss-featured__header">
-            <div>
-                <span>04</span>
-
-                <p>
-                    Live from your ShopSphere catalogue
-                </p>
-            </div>
-
-            <h2 id="ssFeaturedTitle">
-                Featured movement,
-                <span>connected to Django.</span>
-            </h2>
 
             <a href="{% url 'products:product_list' %}">
-                View all products
-
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M5 12h14"></path>
-                    <path d="m13 6 6 6-6 6"></path>
-                </svg>
+                See all products
             </a>
         </header>
 
         {% if featured_products %}
-            <div class="ss-featured__rail">
-                {% for product in featured_products %}
-                    <article
-                        class="ss-featured-card"
-                        data-featured-card="{{ forloop.counter0 }}"
-                    >
+            <div class="shop-home__product-grid">
+                {% for product in featured_products|slice:":12" %}
+                    <article class="shop-home__product-card">
                         <a
                             href="{% url 'products:product_detail' product.slug %}"
-                            class="ss-featured-card__media"
+                            class="shop-home__product-media"
                             aria-label="View {{ product.name }}"
                         >
-                            <span class="ss-featured-card__number">
-                                0{{ forloop.counter }}
-                            </span>
+                            <div class="shop-home__product-badges">
+                                {% if product.is_new_arrival %}
+                                    <span>New</span>
+                                {% endif %}
 
-                            {% if product.is_new_arrival %}
-                                <small>New arrival</small>
-                            {% elif product.is_best_seller %}
-                                <small>Best seller</small>
-                            {% else %}
-                                <small>{{ product.category.name }}</small>
-                            {% endif %}
+                                {% if product.is_best_seller %}
+                                    <span>Best seller</span>
+                                {% endif %}
+                            </div>
 
                             {% if product.main_image %}
                                 <img
@@ -691,51 +322,49 @@
                                 >
                             {% else %}
                                 <img
-                                    src="{% static 'images/products/hero-jogger.svg' %}"
+                                    src="{% static 'images/products/real/motion-runner-pro.webp' %}"
                                     alt="{{ product.name }}"
                                     loading="lazy"
                                 >
                             {% endif %}
                         </a>
 
-                        <div class="ss-featured-card__body">
-                            <div>
-                                <p>{{ product.category.name }}</p>
-
-                                <h3>{{ product.name }}</h3>
-                            </div>
-
-                            <p class="ss-featured-card__description">
-                                {{ product.short_description|default:product.description|truncatechars:105 }}
+                        <div class="shop-home__product-body">
+                            <p class="shop-home__product-category">
+                                {{ product.category.name }}
                             </p>
 
-                            <div class="ss-featured-card__variants">
-                                <span>Available colors</span>
+                            <h3>
+                                <a href="{% url 'products:product_detail' product.slug %}">
+                                    {{ product.name }}
+                                </a>
+                            </h3>
 
-                                <div>
-                                    {% for variant in product.variants.all|slice:":4" %}
-                                        <i
-                                            style="--variant-color: {{ variant.color_hex|default:'#1b1e27' }};"
-                                            title="{{ variant.color_name }}"
-                                        ></i>
-                                    {% empty %}
-                                        <i style="--variant-color: #4169ff;"></i>
-                                    {% endfor %}
-                                </div>
+                            <p class="shop-home__product-description">
+                                {{ product.short_description|default:product.description|truncatechars:92 }}
+                            </p>
+
+                            <div class="shop-home__product-variants">
+                                {% for variant in product.variants.all|slice:":5" %}
+                                    <span
+                                        style="--product-swatch: {{ variant.color_hex|default:'#1e2430' }};"
+                                        title="{{ variant.color_name }}"
+                                    ></span>
+                                {% empty %}
+                                    <span
+                                        style="--product-swatch: #4169ff;"
+                                        title="ShopSphere"
+                                    ></span>
+                                {% endfor %}
                             </div>
 
-                            <div class="ss-featured-card__footer">
+                            <div class="shop-home__product-footer">
                                 <strong>
-                                    Rs. {{ product.selling_price|floatformat:2 }}
+                                    Rs. {{ product.selling_price|floatformat:0 }}
                                 </strong>
 
                                 <a href="{% url 'products:product_detail' product.slug %}">
                                     View product
-
-                                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                                        <path d="M5 12h14"></path>
-                                        <path d="m13 6 6 6-6 6"></path>
-                                    </svg>
                                 </a>
                             </div>
                         </div>
@@ -743,33 +372,93 @@
                 {% endfor %}
             </div>
         {% else %}
-            <div class="ss-featured__empty">
-                <p>
-                    Add active products in Django Admin and mark them
-                    as featured to populate this scene.
-                </p>
+            <div class="shop-home__empty">
+                <h3>Products are being prepared.</h3>
+                <p>Browse the full collection to see currently available footwear.</p>
 
                 <a href="{% url 'products:product_list' %}">
-                    Open the collection
+                    Browse collection
                 </a>
             </div>
         {% endif %}
     </section>
 
+
+    <!-- ==================================================
+         STATIC DEAL / DISCOVERY STRIP
+    =================================================== -->
+
+    <section class="shop-home__discovery">
+        <div>
+            <span>SHOPSPHERE EDIT</span>
+            <h2>Everyday pairs. Performance choices. One catalogue.</h2>
+        </div>
+
+        <div class="shop-home__discovery-links">
+            <a href="{% url 'products:product_list' %}?category=running">
+                Shop running
+            </a>
+
+            <a href="{% url 'products:product_list' %}?category=training">
+                Shop training
+            </a>
+
+            <a href="{% url 'products:product_list' %}?category=lifestyle">
+                Shop lifestyle
+            </a>
+        </div>
+    </section>
+
+
+    <!-- ==================================================
+         MORE PRODUCTS
+    =================================================== -->
+
+    {% if featured_products %}
+        <section class="shop-home__section shop-home__section--compact">
+            <header class="shop-home__section-header">
+                <div>
+                    <p>More to explore</p>
+                    <h2>Keep shopping</h2>
+                </div>
+
+                <a href="{% url 'products:product_list' %}">
+                    Open full catalogue
+                </a>
+            </header>
+
+            <div class="shop-home__product-strip">
+                {% for product in featured_products|slice:":8" %}
+                    <a
+                        href="{% url 'products:product_detail' product.slug %}"
+                        class="shop-home__strip-card"
+                    >
+                        <div>
+                            {% if product.main_image %}
+                                <img
+                                    src="{{ product.main_image.url }}"
+                                    alt="{{ product.name }}"
+                                    loading="lazy"
+                                >
+                            {% else %}
+                                <img
+                                    src="{% static 'images/products/real/motion-runner-pro.webp' %}"
+                                    alt="{{ product.name }}"
+                                    loading="lazy"
+                                >
+                            {% endif %}
+                        </div>
+
+                        <span>{{ product.category.name }}</span>
+                        <h3>{{ product.name }}</h3>
+                        <strong>
+                            Rs. {{ product.selling_price|floatformat:0 }}
+                        </strong>
+                    </a>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
 </div>
-{% endblock %}
-
-
-{% block extra_js %}
-    <script
-        src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"
-    ></script>
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"
-    ></script>
-
-    <script
-        src="{% static 'js/home-motion.js' %}"
-    ></script>
 {% endblock %}

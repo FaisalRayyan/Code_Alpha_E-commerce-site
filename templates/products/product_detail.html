@@ -5,6 +5,7 @@
     {{ product.name }} | ShopSphere
 {% endblock %}
 
+
 {% block extra_css %}
     <link
         rel="stylesheet"
@@ -12,239 +13,1066 @@
     >
 {% endblock %}
 
+
 {% block content %}
-    <section class="product-detail">
-        <nav class="product-detail__breadcrumb">
-            <a href="{% url 'core:home' %}">
-                Home
-            </a>
+<div class="market-product-page">
 
-            <span>/</span>
+    <!-- ==================================================
+         BREADCRUMB
+    =================================================== -->
 
-            <a href="{% url 'products:product_list' %}">
-                Shop
-            </a>
+    <nav
+        class="market-product-breadcrumb"
+        aria-label="Breadcrumb"
+    >
+        <a href="{% url 'core:home' %}">
+            Home
+        </a>
 
-            <span>/</span>
+        <span>/</span>
 
-            <span>{{ product.name }}</span>
-        </nav>
+        <a href="{% url 'products:product_list' %}">
+            Footwear
+        </a>
 
-        <div class="product-detail__layout">
-            <div class="product-gallery">
-                <div class="product-gallery__main">
-                    {% if product.main_image %}
-                        <img
-                            src="{{ product.main_image.url }}"
-                            alt="{{ product.name }}"
-                            id="mainProductImage"
-                        >
-                    {% else %}
-                        <div class="product-gallery__placeholder">
-                            Product image coming soon
-                        </div>
-                    {% endif %}
-                </div>
+        <span>/</span>
 
-                {% if product.images.all %}
-                    <div class="product-gallery__thumbnails">
-                        {% if product.main_image %}
-                            <button
-                                class="product-gallery__thumbnail is-active"
-                                type="button"
-                                data-image="{{ product.main_image.url }}"
-                            >
-                                <img
-                                    src="{{ product.main_image.url }}"
-                                    alt="{{ product.name }} main image"
-                                >
-                            </button>
-                        {% endif %}
+        <a
+            href="{% url 'products:product_list' %}?category={{ product.category.slug }}"
+        >
+            {{ product.category.name }}
+        </a>
 
-                        {% for gallery_image in product.images.all %}
-                            <button
-                                class="product-gallery__thumbnail"
-                                type="button"
-                                data-image="{{ gallery_image.image.url }}"
-                            >
-                                <img
-                                    src="{{ gallery_image.image.url }}"
-                                    alt="{{ gallery_image.alt_text|default:product.name }}"
-                                >
-                            </button>
-                        {% endfor %}
+        <span>/</span>
+
+        <strong>
+            {{ product.name }}
+        </strong>
+    </nav>
+
+
+    <!-- ==================================================
+         MAIN PRODUCT AREA
+    =================================================== -->
+
+    <section class="market-product-main">
+
+        <!-- ==================================================
+             GALLERY
+        =================================================== -->
+
+        <div class="market-gallery">
+            <div class="market-gallery__main">
+                {% if product.main_image %}
+                    <img
+                        src="{{ product.main_image.url }}"
+                        alt="{{ product.name }}"
+                        id="mainProductImage"
+                        fetchpriority="high"
+                    >
+                {% else %}
+                    <div class="market-gallery__placeholder">
+                        <span>ShopSphere</span>
+                        <strong>Product image coming soon</strong>
                     </div>
                 {% endif %}
             </div>
 
-            <div class="product-info">
-                <p class="product-info__category">
-                    {{ product.category.name }}
-                </p>
+            {% if product.main_image or product.images.all %}
+                <div
+                    class="market-gallery__thumbnails"
+                    aria-label="Product images"
+                >
+                    {% if product.main_image %}
+                        <button
+                            type="button"
+                            class="market-gallery__thumbnail is-active"
+                            data-image="{{ product.main_image.url }}"
+                            aria-label="View main image"
+                        >
+                            <img
+                                src="{{ product.main_image.url }}"
+                                alt=""
+                            >
+                        </button>
+                    {% endif %}
 
-                <h1 class="product-info__title">
-                    {{ product.name }}
-                </h1>
+                    {% for gallery_image in product.images.all %}
+                        <button
+                            type="button"
+                            class="market-gallery__thumbnail"
+                            data-image="{{ gallery_image.image.url }}"
+                            aria-label="View {{ gallery_image.alt_text|default:product.name }}"
+                        >
+                            <img
+                                src="{{ gallery_image.image.url }}"
+                                alt=""
+                                loading="lazy"
+                            >
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
 
-                <p class="product-info__summary">
-                    {{ product.short_description }}
-                </p>
 
-                <div class="product-info__price">
+        <!-- ==================================================
+             PRODUCT INFORMATION
+        =================================================== -->
+
+        <div class="market-product-info">
+            <div class="market-product-info__badges">
+                {% if product.is_new_arrival %}
+                    <span>New arrival</span>
+                {% endif %}
+
+                {% if product.is_best_seller %}
+                    <span>Best seller</span>
+                {% endif %}
+
+                {% if discount_percent %}
+                    <span>Save {{ discount_percent }}%</span>
+                {% endif %}
+            </div>
+
+            <p class="market-product-info__category">
+                {{ product.category.name }}
+            </p>
+
+            <h1>
+                {{ product.name }}
+            </h1>
+
+            <p class="market-product-info__summary">
+                {{ product.short_description|default:product.description }}
+            </p>
+
+            <div class="market-product-meta">
+                <span>
+                    Product SKU
+                    <strong>{{ product.sku }}</strong>
+                </span>
+
+                <span>
+                    Brand
+                    <strong>
+                        {% if product.brand %}
+                            {{ product.brand.name }}
+                        {% else %}
+                            ShopSphere
+                        {% endif %}
+                    </strong>
+                </span>
+
+                <span>
+                    Category
+                    <strong>{{ product.category.name }}</strong>
+                </span>
+            </div>
+
+
+            <!-- Price -->
+            <div class="market-product-price">
+                <div>
                     {% if product.discount_price %}
-                        <span class="product-info__old-price">
-                            Rs. {{ product.price }}
+                        <span class="market-product-price__old">
+                            Rs. {{ product.price|floatformat:0 }}
                         </span>
                     {% endif %}
 
                     <strong>
-                        Rs. {{ product.selling_price }}
+                        Rs. {{ product.selling_price|floatformat:0 }}
                     </strong>
                 </div>
 
-                <div class="product-info__stock">
-                    {% if product.is_in_stock %}
-                        <span class="stock-dot stock-dot--available"></span>
-                        In stock — {{ product.stock }} available
-                    {% else %}
-                        <span class="stock-dot stock-dot--unavailable"></span>
-                        Out of stock
-                    {% endif %}
-                </div>
+                {% if product.discount_price %}
+                    <small>
+                        Limited price
+                    </small>
+                {% endif %}
+            </div>
 
-                <div class="product-option">
-                    <div class="product-option__heading">
-                        <span>Select size</span>
-                        <button type="button">
+
+            <!-- Stock -->
+            <div
+                class="market-product-stock"
+                id="marketProductStock"
+            >
+                {% if has_stock %}
+                    <i class="is-available"></i>
+
+                    <span>
+                        In stock
+                        <strong>
+                            {{ available_stock }}
+                            available across variants
+                        </strong>
+                    </span>
+                {% else %}
+                    <i class="is-unavailable"></i>
+
+                    <span>
+                        Currently unavailable
+                    </span>
+                {% endif %}
+            </div>
+
+
+            <!-- Color -->
+            {% if product_colors %}
+                <section class="market-product-option">
+                    <div class="market-product-option__heading">
+                        <div>
+                            <span>Color</span>
+
+                            <strong id="selectedColorLabel">
+                                Select a color
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div
+                        class="market-color-options"
+                        id="marketColorOptions"
+                    >
+                        {% for color in product_colors %}
+                            <button
+                                type="button"
+                                class="market-color-option"
+                                data-color="{{ color.name }}"
+                                aria-label="{{ color.name }}"
+                                {% if not color.has_stock %}disabled{% endif %}
+                            >
+                                <i
+                                    style="--variant-color: {{ color.hex }};"
+                                ></i>
+
+                                <span>
+                                    {{ color.name }}
+                                </span>
+                            </button>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+
+            <!-- Size -->
+            {% if product_sizes %}
+                <section class="market-product-option">
+                    <div class="market-product-option__heading">
+                        <div>
+                            <span>Size</span>
+
+                            <strong id="selectedSizeLabel">
+                                Select a size
+                            </strong>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="market-size-guide-button"
+                            id="openSizeGuide"
+                        >
                             Size guide
                         </button>
                     </div>
 
-                    <div class="product-option__choices">
-                        {% for variant in product.variants.all %}
-                            {% if variant.is_active %}
-                                <button
-                                       type="button"
-                                         class="product-option__size"
-                                          data-variant-id="{{ variant.id }}"
-                                        data-size="{{ variant.size }}"
-                                        data-stock="{{ variant.stock }}"
-                                         data-color="{{ variant.color_name }}"
-                                         {% if variant.stock < 1 %}disabled{% endif %}
-                                    >
-                                    {{ variant.size }}
-                                </button>
-                            {% endif %}
-                        {% empty %}
-                            <p>No sizes currently available.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="product-option">
-                    <span class="product-option__label">
-                        Available colors
-                    </span>
-
-                    <div class="product-option__colors">
-                        {% for variant in product.variants.all %}
-                            {% if variant.is_active %}
-                                <span
-                                    class="product-option__color"
-                                    title="{{ variant.color_name }}"
-                                    style="--variant-color: {{ variant.color_hex|default:'#111111' }};"
-                                ></span>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <form
-                      method="post"
-                      action="{% url 'cart:add_to_cart' product.id %}"
-                      class="product-purchase-form"
-                     id="addToCartForm"
-                   >
-                    {% csrf_token %}
-
-                  <input
-                      type="hidden"
-                      name="variant_id"
-                      id="selectedVariantId"
-                      value=""
-                  >
-
-                 <div class="product-purchase">
-                     <div class="quantity-control">
-                         <button
-                             type="button"
-                             id="decreaseQuantity"
-                             aria-label="Decrease quantity"             
-                         >
-                             −
-                         </button>
-             
-                         <input
-                             id="productQuantity"
-                             name="quantity"
-                             type="number"
-                             value="1"
-                             min="1"
-                             max="{{ product.stock }}"
-                             readonly
-                         >
-
+                    <div
+                        class="market-size-options"
+                        id="marketSizeOptions"
+                    >
+                        {% for size in product_sizes %}
                             <button
                                 type="button"
-                                id="increaseQuantity"
-                                aria-label="Increase quantity"
+                                class="market-size-option"
+                                data-size="{{ size }}"
                             >
-                                +
+                                {{ size }}
                             </button>
-                        </div>
-
-                        <button
-                            type="submit"
-                            class="product-purchase__button"
-                            id="addToCartButton"
-                            {% if not product.is_in_stock %}disabled{% endif %}
-                        >
-                            Add to Cart
-                        </button>
+                        {% endfor %}
                     </div>
+                </section>
+            {% endif %}
 
-                   <p
-                        class="product-selection-message"
-                        id="productSelectionMessage"
-                    >
-                        Select a size before adding this product to your cart.
-                    </p>
-                </form>
 
-                <div class="product-description">
-                    <h2>Product details</h2>
-                    <p>
-                        {{ product.description }}
-                    </p>
-                </div>
+            <!-- Selection summary -->
+            <div class="market-selection-summary">
+                <span>
+                    Selected pair
+                </span>
 
-                <div class="product-benefits">
-                    <article>
-                        <strong>Secure checkout</strong>
-                        <span>Protected ordering process</span>
-                    </article>
+                <strong id="selectedVariantSummary">
+                    Choose a color and size
+                </strong>
 
-                    <article>
-                        <strong>Easy returns</strong>
-                        <span>Simple return experience</span>
-                    </article>
-
-                    <article>
-                        <strong>Fast delivery</strong>
-                        <span>Delivery estimate at checkout</span>
-                    </article>
-                </div>
+                <small id="selectedVariantSku">
+                    Variant SKU will appear here
+                </small>
             </div>
         </div>
+
+
+        <!-- ==================================================
+             PURCHASE BOX
+        =================================================== -->
+
+        <aside class="market-buy-box">
+            <p class="market-buy-box__eyebrow">
+                Order this pair
+            </p>
+
+            <div class="market-buy-box__price">
+                {% if product.discount_price %}
+                    <span>
+                        Rs. {{ product.price|floatformat:0 }}
+                    </span>
+                {% endif %}
+
+                <strong>
+                    Rs. {{ product.selling_price|floatformat:0 }}
+                </strong>
+            </div>
+
+            <div class="market-buy-box__delivery">
+                <strong>
+                    Delivery
+                </strong>
+
+                <span>
+                    Delivery estimate and shipping cost are calculated during checkout.
+                </span>
+            </div>
+
+            <div class="market-buy-box__availability">
+                {% if has_stock %}
+                    <strong class="is-available">
+                        In stock
+                    </strong>
+
+                    <span id="buyBoxStockText">
+                        Select a variant to see exact stock.
+                    </span>
+                {% else %}
+                    <strong class="is-unavailable">
+                        Currently unavailable
+                    </strong>
+                {% endif %}
+            </div>
+
+            <form
+                method="post"
+                action="{% url 'cart:add_to_cart' product.id %}"
+                id="addToCartForm"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="variant_id"
+                    id="selectedVariantId"
+                    value=""
+                >
+
+                <label
+                    for="productQuantity"
+                    class="market-buy-box__quantity-label"
+                >
+                    Quantity
+                </label>
+
+                <div class="market-quantity">
+                    <button
+                        type="button"
+                        id="decreaseQuantity"
+                        aria-label="Decrease quantity"
+                    >
+                        −
+                    </button>
+
+                    <input
+                        id="productQuantity"
+                        name="quantity"
+                        type="number"
+                        value="1"
+                        min="1"
+                        max="1"
+                        readonly
+                    >
+
+                    <button
+                        type="button"
+                        id="increaseQuantity"
+                        aria-label="Increase quantity"
+                    >
+                        +
+                    </button>
+                </div>
+
+                <button
+                    type="submit"
+                    class="market-add-button"
+                    id="addToCartButton"
+                    disabled
+                >
+                    Add to Cart
+                </button>
+
+                <p
+                    class="market-buy-box__message"
+                    id="productSelectionMessage"
+                >
+                    Select a color and size before adding this product.
+                </p>
+            </form>
+
+            <div class="market-buy-box__facts">
+                <article>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3 5 6v5c0 4.7 2.8 8 7 10 4.2-2 7-5.3 7-10V6l-7-3Z"></path>
+                        <path d="m9 12 2 2 4-5"></path>
+                    </svg>
+
+                    <span>
+                        <strong>Live stock check</strong>
+                        Variant availability is validated when added to cart.
+                    </span>
+                </article>
+
+                <article>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 7h11v10H3z"></path>
+                        <path d="M14 10h4l3 3v4h-7z"></path>
+                        <circle cx="7" cy="19" r="2"></circle>
+                        <circle cx="18" cy="19" r="2"></circle>
+                    </svg>
+
+                    <span>
+                        <strong>Delivery details</strong>
+                        Final delivery information is shown during checkout.
+                    </span>
+                </article>
+
+                <article>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 7h16"></path>
+                        <path d="M6 4h12v16H6z"></path>
+                        <path d="M9 11h6"></path>
+                    </svg>
+
+                    <span>
+                        <strong>Selection preserved</strong>
+                        Your chosen size and color are saved with the cart item.
+                    </span>
+                </article>
+            </div>
+        </aside>
     </section>
+
+
+    <!-- ==================================================
+         PRODUCT DETAIL BLOCKS
+    =================================================== -->
+
+    <section class="market-product-details">
+        <article class="market-product-description">
+            <p>
+                Product details
+            </p>
+
+            <h2>
+                About {{ product.name }}
+            </h2>
+
+            <div>
+                {{ product.description|linebreaks }}
+            </div>
+        </article>
+
+        <aside class="market-product-specs">
+            <h2>
+                Product information
+            </h2>
+
+            <dl>
+                <div>
+                    <dt>SKU</dt>
+                    <dd>{{ product.sku }}</dd>
+                </div>
+
+                <div>
+                    <dt>Brand</dt>
+                    <dd>
+                        {% if product.brand %}
+                            {{ product.brand.name }}
+                        {% else %}
+                            ShopSphere
+                        {% endif %}
+                    </dd>
+                </div>
+
+                <div>
+                    <dt>Category</dt>
+                    <dd>{{ product.category.name }}</dd>
+                </div>
+
+                {% for attribute in visible_attributes %}
+                    <div>
+                        <dt>{{ attribute.name }}</dt>
+                        <dd>
+                            {% for value in attribute.values %}
+                                {{ value }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </dd>
+                    </div>
+                {% endfor %}
+
+                <div>
+                    <dt>Available sizes</dt>
+                    <dd>
+                        {% if product_sizes %}
+                            {% for size in product_sizes %}
+                                {{ size }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+                    </dd>
+                </div>
+
+                <div>
+                    <dt>Available colors</dt>
+                    <dd>
+                        {% if product_colors %}
+                            {% for color in product_colors %}
+                                {{ color.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+                    </dd>
+                </div>
+
+                <div>
+                    <dt>Availability</dt>
+                    <dd>
+                        {% if has_stock %}
+                            In stock
+                        {% else %}
+                            Currently unavailable
+                        {% endif %}
+                    </dd>
+                </div>
+            </dl>
+        </aside>
+    </section>
+
+
+    <!-- ==================================================
+         RELATED PRODUCTS
+    =================================================== -->
+
+    {% if related_products %}
+        <section class="market-related">
+            <header>
+                <div>
+                    <p>
+                        More from {{ product.category.name }}
+                    </p>
+
+                    <h2>
+                        You may also like
+                    </h2>
+                </div>
+
+                <a
+                    href="{% url 'products:product_list' %}?category={{ product.category.slug }}"
+                >
+                    View category
+                </a>
+            </header>
+
+            <div class="market-related__grid">
+                {% for related in related_products %}
+                    <article>
+                        <a
+                            href="{% url 'products:product_detail' related.slug %}"
+                            class="market-related__media"
+                        >
+                            {% if related.main_image %}
+                                <img
+                                    src="{{ related.main_image.url }}"
+                                    alt="{{ related.name }}"
+                                    loading="lazy"
+                                >
+                            {% else %}
+                                <span>
+                                    Image coming soon
+                                </span>
+                            {% endif %}
+                        </a>
+
+                        <div>
+                            <p>
+                                {{ related.category.name }}
+                            </p>
+
+                            <h3>
+                                <a
+                                    href="{% url 'products:product_detail' related.slug %}"
+                                >
+                                    {{ related.name }}
+                                </a>
+                            </h3>
+
+                            <strong>
+                                Rs. {{ related.selling_price|floatformat:0 }}
+                            </strong>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+
+    <!-- ==================================================
+         SIZE GUIDE
+    =================================================== -->
+
+    <dialog
+        class="market-size-guide"
+        id="sizeGuideDialog"
+    >
+        <div class="market-size-guide__head">
+            <div>
+                <span>
+                    ShopSphere sizing
+                </span>
+
+                <h2>
+                    Available sizes
+                </h2>
+            </div>
+
+            <button
+                type="button"
+                id="closeSizeGuide"
+                aria-label="Close size guide"
+            >
+                ×
+            </button>
+        </div>
+
+        <p>
+            Choose the size you normally wear for comparable footwear.
+            Product fit can vary by style.
+        </p>
+
+        <div class="market-size-guide__sizes">
+            {% for size in product_sizes %}
+                <span>
+                    {{ size }}
+                </span>
+            {% endfor %}
+        </div>
+    </dialog>
+
+
+    {{ variant_data|json_script:"productVariantData" }}
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const variantNode =
+        document.querySelector("#productVariantData");
+
+    const variants = variantNode
+        ? JSON.parse(variantNode.textContent)
+        : [];
+
+    const colorButtons = [
+        ...document.querySelectorAll(
+            ".market-color-option"
+        )
+    ];
+
+    const sizeButtons = [
+        ...document.querySelectorAll(
+            ".market-size-option"
+        )
+    ];
+
+    const hiddenVariant =
+        document.querySelector("#selectedVariantId");
+
+    const addButton =
+        document.querySelector("#addToCartButton");
+
+    const selectionMessage =
+        document.querySelector("#productSelectionMessage");
+
+    const colorLabel =
+        document.querySelector("#selectedColorLabel");
+
+    const sizeLabel =
+        document.querySelector("#selectedSizeLabel");
+
+    const variantSummary =
+        document.querySelector("#selectedVariantSummary");
+
+    const variantSku =
+        document.querySelector("#selectedVariantSku");
+
+    const stockText =
+        document.querySelector("#buyBoxStockText");
+
+    const quantityInput =
+        document.querySelector("#productQuantity");
+
+    const decreaseQuantity =
+        document.querySelector("#decreaseQuantity");
+
+    const increaseQuantity =
+        document.querySelector("#increaseQuantity");
+
+    let selectedColor = "";
+    let selectedSize = "";
+    let selectedVariant = null;
+
+
+    const variantsForColor = (color) =>
+        variants.filter(
+            (variant) =>
+                variant.color_name === color
+        );
+
+
+    const exactVariant = () =>
+        variants.find(
+            (variant) =>
+                variant.color_name === selectedColor
+                && String(variant.size) === String(selectedSize)
+        );
+
+
+    const updateColorButtons = () => {
+        colorButtons.forEach((button) => {
+            button.classList.toggle(
+                "is-selected",
+                button.dataset.color === selectedColor
+            );
+        });
+    };
+
+
+    const updateSizeAvailability = () => {
+        sizeButtons.forEach((button) => {
+            const size = button.dataset.size;
+
+            const match = variants.find(
+                (variant) =>
+                    variant.color_name === selectedColor
+                    && String(variant.size) === String(size)
+                    && variant.stock > 0
+            );
+
+            button.disabled = !match;
+
+            button.classList.toggle(
+                "is-selected",
+                String(size) === String(selectedSize)
+            );
+        });
+    };
+
+
+    const resetQuantity = () => {
+        if (!quantityInput) return;
+
+        quantityInput.value = "1";
+        quantityInput.max =
+            selectedVariant
+                ? String(selectedVariant.stock)
+                : "1";
+    };
+
+
+    const renderSelection = () => {
+        selectedVariant = exactVariant();
+
+        if (colorLabel) {
+            colorLabel.textContent =
+                selectedColor || "Select a color";
+        }
+
+        if (sizeLabel) {
+            sizeLabel.textContent =
+                selectedSize || "Select a size";
+        }
+
+        updateColorButtons();
+        updateSizeAvailability();
+
+        if (
+            selectedVariant
+            && selectedVariant.stock > 0
+        ) {
+            if (hiddenVariant) {
+                hiddenVariant.value =
+                    selectedVariant.id;
+            }
+
+            if (addButton) {
+                addButton.disabled = false;
+            }
+
+            if (selectionMessage) {
+                selectionMessage.textContent =
+                    "This variant is ready to add to your cart.";
+            }
+
+            if (variantSummary) {
+                variantSummary.textContent =
+                    `${selectedVariant.color_name} / Size ${selectedVariant.size}`;
+            }
+
+            if (variantSku) {
+                variantSku.textContent =
+                    `Variant SKU: ${selectedVariant.sku}`;
+            }
+
+            if (stockText) {
+                stockText.textContent =
+                    `${selectedVariant.stock} item(s) available in this variant.`;
+            }
+        } else {
+            if (hiddenVariant) {
+                hiddenVariant.value = "";
+            }
+
+            if (addButton) {
+                addButton.disabled = true;
+            }
+
+            if (selectionMessage) {
+                selectionMessage.textContent =
+                    selectedColor
+                        ? "Select an available size before adding this product."
+                        : "Select a color and size before adding this product.";
+            }
+
+            if (variantSummary) {
+                variantSummary.textContent =
+                    selectedColor
+                        ? `${selectedColor} / Choose size`
+                        : "Choose a color and size";
+            }
+
+            if (variantSku) {
+                variantSku.textContent =
+                    "Variant SKU will appear here";
+            }
+
+            if (stockText) {
+                stockText.textContent =
+                    "Select a variant to see exact stock.";
+            }
+        }
+
+        resetQuantity();
+    };
+
+
+    colorButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            if (button.disabled) return;
+
+            selectedColor =
+                button.dataset.color || "";
+
+            const currentlySelectedStillWorks =
+                variants.some(
+                    (variant) =>
+                        variant.color_name === selectedColor
+                        && String(variant.size) === String(selectedSize)
+                        && variant.stock > 0
+                );
+
+            if (!currentlySelectedStillWorks) {
+                selectedSize = "";
+            }
+
+            renderSelection();
+        });
+    });
+
+
+    sizeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            if (button.disabled) return;
+
+            const size =
+                button.dataset.size || "";
+
+            if (!selectedColor) {
+                const firstMatch = variants.find(
+                    (variant) =>
+                        String(variant.size) === String(size)
+                        && variant.stock > 0
+                );
+
+                if (firstMatch) {
+                    selectedColor =
+                        firstMatch.color_name;
+                }
+            }
+
+            selectedSize = size;
+
+            renderSelection();
+        });
+    });
+
+
+    const firstAvailable =
+        variants.find(
+            (variant) =>
+                variant.stock > 0
+        );
+
+    if (firstAvailable) {
+        selectedColor =
+            firstAvailable.color_name;
+
+        const availableVariants =
+            variants.filter(
+                (variant) =>
+                    variant.stock > 0
+            );
+
+        if (availableVariants.length === 1) {
+            selectedSize =
+                firstAvailable.size;
+        }
+    }
+
+    renderSelection();
+
+
+    decreaseQuantity?.addEventListener(
+        "click",
+        () => {
+            if (!quantityInput) return;
+
+            const current =
+                Number(quantityInput.value) || 1;
+
+            quantityInput.value =
+                String(
+                    Math.max(
+                        1,
+                        current - 1
+                    )
+                );
+        }
+    );
+
+
+    increaseQuantity?.addEventListener(
+        "click",
+        () => {
+            if (
+                !quantityInput
+                || !selectedVariant
+            ) {
+                return;
+            }
+
+            const current =
+                Number(quantityInput.value) || 1;
+
+            quantityInput.value =
+                String(
+                    Math.min(
+                        selectedVariant.stock,
+                        current + 1
+                    )
+                );
+        }
+    );
+
+
+    // Gallery
+    const mainImage =
+        document.querySelector("#mainProductImage");
+
+    const thumbnails = [
+        ...document.querySelectorAll(
+            ".market-gallery__thumbnail"
+        )
+    ];
+
+    thumbnails.forEach((thumbnail) => {
+        thumbnail.addEventListener(
+            "click",
+            () => {
+                if (
+                    mainImage
+                    && thumbnail.dataset.image
+                ) {
+                    mainImage.src =
+                        thumbnail.dataset.image;
+                }
+
+                thumbnails.forEach(
+                    (item) =>
+                        item.classList.remove(
+                            "is-active"
+                        )
+                );
+
+                thumbnail.classList.add(
+                    "is-active"
+                );
+            }
+        );
+    });
+
+
+    // Size guide
+    const sizeGuide =
+        document.querySelector("#sizeGuideDialog");
+
+    document
+        .querySelector("#openSizeGuide")
+        ?.addEventListener(
+            "click",
+            () => {
+                sizeGuide?.showModal();
+            }
+        );
+
+    document
+        .querySelector("#closeSizeGuide")
+        ?.addEventListener(
+            "click",
+            () => {
+                sizeGuide?.close();
+            }
+        );
+
+    sizeGuide?.addEventListener(
+        "click",
+        (event) => {
+            if (event.target === sizeGuide) {
+                sizeGuide.close();
+            }
+        }
+    );
+});
+</script>
 {% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Order Confirmed | ShopSphere
+{% endblock %}
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/orders.css' %}"
+    >
+{% endblock %}
+
+{% block content %}
+<section class="order-success">
+    <div class="order-success__icon">
+        ✓
+    </div>
+
+    <p>Order placed</p>
+
+    <h1>
+        Your order is confirmed.
+    </h1>
+
+    <span>
+        Order number
+        <strong>{{ order.order_number }}</strong>
+    </span>
+
+    <div class="order-success__summary">
+        <article>
+            <small>Total</small>
+            <strong>
+                Rs. {{ order.total|floatformat:0 }}
+            </strong>
+        </article>
+
+        <article>
+            <small>Payment</small>
+            <strong>
+                {{ order.get_payment_method_display }}
+            </strong>
+        </article>
+
+        <article>
+            <small>Status</small>
+            <strong>
+                {{ order.get_fulfillment_status_display }}
+            </strong>
+        </article>
+    </div>
+
+    <div class="order-success__actions">
+        <a
+            href="{% url 'orders:order_detail' order.order_number %}"
+            class="is-primary"
+        >
+            View order
+        </a>
+
+        <a href="{% url 'products:product_list' %}">
+            Continue shopping
+        </a>
+    </div>
+</section>
+{% endblock %}

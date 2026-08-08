@@ -1,101 +1,921 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
-    Shop Joggers | ShopSphere
+    {% if query %}
+        "{{ query }}" | ShopSphere
+    {% else %}
+        Shop Footwear | ShopSphere
+    {% endif %}
 {% endblock %}
 
+
+{% block extra_css %}
+    <link
+        rel="stylesheet"
+        href="{% static 'css/product-list.css' %}"
+    >
+{% endblock %}
+
+
 {% block content %}
-    <section class="shop-page">
-        <header class="shop-header">
-            <p class="shop-header__eyebrow">
-                ShopSphere Collection
+<div class="catalog-page">
+
+    <!-- ==================================================
+         CATALOGUE TOP BAR
+    =================================================== -->
+
+    <section class="catalog-topbar">
+        <div class="catalog-topbar__copy">
+            <nav
+                class="catalog-breadcrumb"
+                aria-label="Breadcrumb"
+            >
+                <a href="{% url 'core:home' %}">
+                    Home
+                </a>
+
+                <span>/</span>
+
+                <a href="{% url 'products:product_list' %}">
+                    Footwear
+                </a>
+
+                {% if selected_category %}
+                    <span>/</span>
+                    <strong>
+                        {{ selected_category|title }}
+                    </strong>
+                {% endif %}
+            </nav>
+
+            {% if query %}
+                <p class="catalog-topbar__eyebrow">
+                    Search results
+                </p>
+
+                <h1>
+                    Results for
+                    <span>"{{ query }}"</span>
+                </h1>
+            {% elif selected_category %}
+                <p class="catalog-topbar__eyebrow">
+                    ShopSphere collection
+                </p>
+
+                <h1>
+                    {{ selected_category|title }}
+                    <span>footwear</span>
+                </h1>
+            {% else %}
+                <p class="catalog-topbar__eyebrow">
+                    ShopSphere catalogue
+                </p>
+
+                <h1>
+                    All
+                    <span>footwear</span>
+                </h1>
+            {% endif %}
+
+            <p class="catalog-topbar__result-copy">
+                {{ result_count }}
+                product{{ result_count|pluralize }}
+                found
             </p>
+        </div>
 
-            <h1 class="shop-header__title">
-                Built for every move.
-            </h1>
+        <div class="catalog-topbar__actions">
+            <button
+                type="button"
+                class="catalog-filter-button"
+                id="catalogFilterButton"
+                aria-controls="catalogFilters"
+                aria-expanded="false"
+            >
+                Filters
+            </button>
 
-            <p class="shop-header__description">
-                Explore premium joggers designed for performance,
-                comfort, and everyday movement.
-            </p>
-        </header>
+            <form
+                method="get"
+                class="catalog-sort"
+            >
+                {% if query %}
+                    <input
+                        type="hidden"
+                        name="q"
+                        value="{{ query }}"
+                    >
+                {% endif %}
 
-        <div class="product-grid">
-            {% for product in products %}
-                <article class="product-card">
-                    <div class="product-card__media">
-                        {% if product.main_image %}
-                            <img
-                                src="{{ product.main_image.url }}"
-                                alt="{{ product.name }}"
-                                class="product-card__image"
-                            >
-                        {% else %}
-                            <div class="product-card__placeholder">
-                                Product image coming soon
-                            </div>
-                        {% endif %}
+                {% if selected_category %}
+                    <input
+                        type="hidden"
+                        name="category"
+                        value="{{ selected_category }}"
+                    >
+                {% endif %}
 
-                        {% if product.is_new_arrival %}
-                            <span class="product-card__badge">
-                                New Arrival
-                            </span>
-                        {% endif %}
+                {% for brand_slug in selected_brands %}
+                    <input
+                        type="hidden"
+                        name="brand"
+                        value="{{ brand_slug }}"
+                    >
+                {% endfor %}
+
+                {% for param_name, param_value in selected_attribute_query_items %}
+                    <input
+                        type="hidden"
+                        name="{{ param_name }}"
+                        value="{{ param_value }}"
+                    >
+                {% endfor %}
+
+                {% if price_min %}
+                    <input
+                        type="hidden"
+                        name="price_min"
+                        value="{{ price_min }}"
+                    >
+                {% endif %}
+
+                {% if price_max %}
+                    <input
+                        type="hidden"
+                        name="price_max"
+                        value="{{ price_max }}"
+                    >
+                {% endif %}
+
+                {% for size in selected_sizes %}
+                    <input
+                        type="hidden"
+                        name="size"
+                        value="{{ size }}"
+                    >
+                {% endfor %}
+
+                {% for color in selected_colors %}
+                    <input
+                        type="hidden"
+                        name="color"
+                        value="{{ color }}"
+                    >
+                {% endfor %}
+
+                {% if in_stock_only %}
+                    <input
+                        type="hidden"
+                        name="in_stock"
+                        value="1"
+                    >
+                {% endif %}
+
+                {% if new_only %}
+                    <input
+                        type="hidden"
+                        name="new"
+                        value="1"
+                    >
+                {% endif %}
+
+                {% if best_only %}
+                    <input
+                        type="hidden"
+                        name="best"
+                        value="1"
+                    >
+                {% endif %}
+
+                <label for="catalogSort">
+                    Sort by
+                </label>
+
+                <select
+                    id="catalogSort"
+                    name="sort"
+                    onchange="this.form.submit()"
+                >
+                    <option
+                        value="featured"
+                        {% if sort == "featured" %}selected{% endif %}
+                    >
+                        Featured
+                    </option>
+
+                    <option
+                        value="newest"
+                        {% if sort == "newest" %}selected{% endif %}
+                    >
+                        Newest
+                    </option>
+
+                    <option
+                        value="best_selling"
+                        {% if sort == "best_selling" %}selected{% endif %}
+                    >
+                        Best sellers
+                    </option>
+
+                    <option
+                        value="price_asc"
+                        {% if sort == "price_asc" %}selected{% endif %}
+                    >
+                        Price: low to high
+                    </option>
+
+                    <option
+                        value="price_desc"
+                        {% if sort == "price_desc" %}selected{% endif %}
+                    >
+                        Price: high to low
+                    </option>
+
+                    <option
+                        value="name_asc"
+                        {% if sort == "name_asc" %}selected{% endif %}
+                    >
+                        Name: A–Z
+                    </option>
+                </select>
+            </form>
+        </div>
+    </section>
+
+
+    <!-- ==================================================
+         ACTIVE FILTERS
+    =================================================== -->
+
+    {% if query or selected_category or selected_brands or selected_sizes or selected_colors or active_attribute_chips or price_min or price_max or in_stock_only or new_only or best_only %}
+        <section class="catalog-active">
+            <span>
+                Active filters
+            </span>
+
+            <div>
+                {% if query %}
+                    <span class="catalog-chip">
+                        Search: {{ query }}
+                    </span>
+                {% endif %}
+
+                {% if selected_category %}
+                    <span class="catalog-chip">
+                        {{ selected_category|title }}
+                    </span>
+                {% endif %}
+
+                {% for brand_slug in selected_brands %}
+                    <span class="catalog-chip">
+                        Brand: {{ brand_slug|title }}
+                    </span>
+                {% endfor %}
+
+                {% for chip in active_attribute_chips %}
+                    <span class="catalog-chip">
+                        {{ chip.name }}: {{ chip.value }}
+                    </span>
+                {% endfor %}
+
+                {% for size in selected_sizes %}
+                    <span class="catalog-chip">
+                        Size {{ size }}
+                    </span>
+                {% endfor %}
+
+                {% for color in selected_colors %}
+                    <span class="catalog-chip">
+                        {{ color }}
+                    </span>
+                {% endfor %}
+
+                {% if price_min %}
+                    <span class="catalog-chip">
+                        Min Rs. {{ price_min }}
+                    </span>
+                {% endif %}
+
+                {% if price_max %}
+                    <span class="catalog-chip">
+                        Max Rs. {{ price_max }}
+                    </span>
+                {% endif %}
+
+                {% if in_stock_only %}
+                    <span class="catalog-chip">
+                        In stock
+                    </span>
+                {% endif %}
+
+                {% if new_only %}
+                    <span class="catalog-chip">
+                        New arrivals
+                    </span>
+                {% endif %}
+
+                {% if best_only %}
+                    <span class="catalog-chip">
+                        Best sellers
+                    </span>
+                {% endif %}
+            </div>
+
+            <a href="{% url 'products:product_list' %}">
+                Clear all
+            </a>
+        </section>
+    {% endif %}
+
+
+    <!-- ==================================================
+         CATALOGUE LAYOUT
+    =================================================== -->
+
+    <div class="catalog-layout">
+
+        <!-- Mobile backdrop -->
+        <button
+            type="button"
+            class="catalog-filter-backdrop"
+            id="catalogFilterBackdrop"
+            aria-label="Close filters"
+        ></button>
+
+
+        <!-- ==================================================
+             FILTERS
+        =================================================== -->
+
+        <aside
+            class="catalog-filters"
+            id="catalogFilters"
+            aria-label="Product filters"
+        >
+            <div class="catalog-filters__mobile-head">
+                <strong>
+                    Filters
+                </strong>
+
+                <button
+                    type="button"
+                    id="catalogFilterClose"
+                    aria-label="Close filters"
+                >
+                    ×
+                </button>
+            </div>
+
+            <form method="get">
+
+                {% if query %}
+                    <input
+                        type="hidden"
+                        name="q"
+                        value="{{ query }}"
+                    >
+                {% endif %}
+
+                {% if sort %}
+                    <input
+                        type="hidden"
+                        name="sort"
+                        value="{{ sort }}"
+                    >
+                {% endif %}
+
+
+                <!-- Category -->
+                <section class="catalog-filter-group">
+                    <h2>
+                        Department
+                    </h2>
+
+                    <div class="catalog-filter-list catalog-filter-list--links">
+                        <a
+                            href="{% url 'products:product_list' %}{% if query %}?q={{ query|urlencode }}{% endif %}"
+                            class="{% if not selected_category %}is-active{% endif %}"
+                        >
+                            <span>All footwear</span>
+                            <strong>›</strong>
+                        </a>
+
+                        {% for category in categories %}
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="category"
+                                    value="{{ category.slug }}"
+                                    {% if selected_category == category.slug %}checked{% endif %}
+                                >
+
+                                <span>
+                                    {{ category.name }}
+                                </span>
+
+                                <small>
+                                    {{ category.active_product_count }}
+                                </small>
+                            </label>
+                        {% endfor %}
                     </div>
+                </section>
 
-                    <div class="product-card__content">
-                        <p class="product-card__category">
-                            {{ product.category.name }}
-                        </p>
 
-                        <h2 class="product-card__name">
-                            {{ product.name }}
+                <!-- Brand -->
+                {% if brands %}
+                    <section class="catalog-filter-group">
+                        <h2>
+                            Brand
                         </h2>
 
-                        <p class="product-card__description">
-                            {{ product.short_description }}
-                        </p>
+                        <div class="catalog-facet-list">
+                            {% for brand in brands %}
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="brand"
+                                        value="{{ brand.slug }}"
+                                        {% if brand.slug in selected_brands %}checked{% endif %}
+                                    >
 
-                        <div class="product-card__sizes">
-                            <span>Available sizes:</span>
+                                    <span>
+                                        {{ brand.name }}
+                                    </span>
 
-                            {% for variant in product.variants.all %}
-                                <span class="product-card__size">
-                                    {{ variant.size }}
-                                </span>
-                            {% empty %}
-                                <span>No variants added</span>
+                                    <small>
+                                        {{ brand.active_product_count }}
+                                    </small>
+                                </label>
                             {% endfor %}
                         </div>
+                    </section>
+                {% endif %}
 
-                        <div class="product-card__footer">
-                            <div class="product-card__price">
-                                {% if product.discount_price %}
-                                    <span class="product-card__old-price">
-                                        Rs. {{ product.price }}
+
+                <!-- Price -->
+                <section class="catalog-filter-group">
+                    <h2>
+                        Price
+                    </h2>
+
+                    <div class="catalog-price-fields">
+                        <label>
+                            <span>Min</span>
+
+                            <input
+                                type="number"
+                                name="price_min"
+                                min="0"
+                                step="1"
+                                value="{{ price_min }}"
+                                placeholder="0"
+                            >
+                        </label>
+
+                        <label>
+                            <span>Max</span>
+
+                            <input
+                                type="number"
+                                name="price_max"
+                                min="0"
+                                step="1"
+                                value="{{ price_max }}"
+                                placeholder="50000"
+                            >
+                        </label>
+                    </div>
+                </section>
+
+
+                <!-- Size -->
+                {% if sizes %}
+                    <section class="catalog-filter-group">
+                        <h2>
+                            Size
+                        </h2>
+
+                        <div class="catalog-size-grid">
+                            {% for size in sizes %}
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="size"
+                                        value="{{ size }}"
+                                        {% if size in selected_sizes %}checked{% endif %}
+                                    >
+
+                                    <span>
+                                        {{ size }}
                                     </span>
-                                {% endif %}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
 
-                                <strong>
-                                    Rs. {{ product.selling_price }}
-                                </strong>
-                            </div>
+
+                <!-- Color -->
+                {% if colors %}
+                    <section class="catalog-filter-group">
+                        <h2>
+                            Color
+                        </h2>
+
+                        <div class="catalog-color-list">
+                            {% for color in colors %}
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="color"
+                                        value="{{ color.color_name }}"
+                                        {% if color.color_name in selected_colors %}checked{% endif %}
+                                    >
+
+                                    <i
+                                        style="--filter-color: {{ color.color_hex|default:'#313845' }};"
+                                    ></i>
+
+                                    <span>
+                                        {{ color.color_name }}
+                                    </span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+
+                <!-- Dynamic attributes -->
+                {% for facet in attribute_filters %}
+                    <section class="catalog-filter-group">
+                        <h2>
+                            {{ facet.name }}
+                        </h2>
+
+                        {% if facet.description %}
+                            <p class="catalog-filter-group__description">
+                                {{ facet.description }}
+                            </p>
+                        {% endif %}
+
+                        <div class="catalog-facet-list">
+                            {% for choice in facet.choices %}
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        name="attr_{{ facet.slug }}"
+                                        value="{{ choice.value }}"
+                                        {% if choice.is_selected %}checked{% endif %}
+                                    >
+
+                                    <span>
+                                        {{ choice.value }}
+                                    </span>
+
+                                    <small>
+                                        {{ choice.count }}
+                                    </small>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endfor %}
+
+
+                <!-- Availability -->
+                <section class="catalog-filter-group">
+                    <h2>
+                        Availability
+                    </h2>
+
+                    <div class="catalog-check-list">
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="in_stock"
+                                value="1"
+                                {% if in_stock_only %}checked{% endif %}
+                            >
+
+                            <span>
+                                In stock only
+                            </span>
+                        </label>
+
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="new"
+                                value="1"
+                                {% if new_only %}checked{% endif %}
+                            >
+
+                            <span>
+                                New arrivals
+                            </span>
+                        </label>
+
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="best"
+                                value="1"
+                                {% if best_only %}checked{% endif %}
+                            >
+
+                            <span>
+                                Best sellers
+                            </span>
+                        </label>
+                    </div>
+                </section>
+
+
+                <div class="catalog-filters__actions">
+                    <button
+                        type="submit"
+                        class="catalog-apply"
+                    >
+                        Apply filters
+                    </button>
+
+                    <a href="{% url 'products:product_list' %}">
+                        Reset
+                    </a>
+                </div>
+
+            </form>
+        </aside>
+
+
+        <!-- ==================================================
+             RESULTS
+        =================================================== -->
+
+        <section class="catalog-results">
+            {% if products %}
+                <div class="catalog-grid">
+                    {% for product in products %}
+                        <article class="catalog-card">
 
                             <a
                                 href="{% url 'products:product_detail' product.slug %}"
-                                 class="product-card__button"
->
-                                View Product
-                           </a>
-                        </div>
-                    </div>
-                </article>
-            {% empty %}
-                <div class="empty-products">
-                    No active products are currently available.
+                                class="catalog-card__media"
+                                aria-label="View {{ product.name }}"
+                            >
+                                <div class="catalog-card__badges">
+                                    {% if product.is_new_arrival %}
+                                        <span class="catalog-badge catalog-badge--new">
+                                            New
+                                        </span>
+                                    {% endif %}
+
+                                    {% if product.is_best_seller %}
+                                        <span class="catalog-badge catalog-badge--best">
+                                            Best seller
+                                        </span>
+                                    {% endif %}
+
+                                    {% if product.discount_price %}
+                                        <span class="catalog-badge catalog-badge--sale">
+                                            Sale
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                {% if product.main_image %}
+                                    <img
+                                        src="{{ product.main_image.url }}"
+                                        alt="{{ product.name }}"
+                                        loading="lazy"
+                                    >
+                                {% else %}
+                                    <div class="catalog-card__placeholder">
+                                        <span>ShopSphere</span>
+                                        <strong>Image coming soon</strong>
+                                    </div>
+                                {% endif %}
+                            </a>
+
+                            <div class="catalog-card__body">
+
+                                <p class="catalog-card__category">
+                                    {% if product.brand %}
+                                        {{ product.brand.name }} ·
+                                    {% endif %}
+                                    {{ product.category.name }}
+                                </p>
+
+                                <h2>
+                                    <a href="{% url 'products:product_detail' product.slug %}">
+                                        {{ product.name }}
+                                    </a>
+                                </h2>
+
+                                <p class="catalog-card__description">
+                                    {{ product.short_description|default:product.description|truncatechars:105 }}
+                                </p>
+
+
+                                <!-- Colors -->
+                                <div class="catalog-card__swatches">
+                                    {% for variant in product.active_variants|slice:":6" %}
+                                        <span
+                                            style="--swatch: {{ variant.color_hex|default:'#303744' }};"
+                                            title="{{ variant.color_name }}"
+                                        ></span>
+                                    {% empty %}
+                                        <span
+                                            style="--swatch: #4169ff;"
+                                            title="ShopSphere"
+                                        ></span>
+                                    {% endfor %}
+                                </div>
+
+
+                                <!-- Sizes -->
+                                <div class="catalog-card__sizes">
+                                    {% for variant in product.active_variants|slice:":5" %}
+                                        <span>
+                                            {{ variant.size }}
+                                        </span>
+                                    {% empty %}
+                                        <span>
+                                            Standard
+                                        </span>
+                                    {% endfor %}
+                                </div>
+
+
+                                <!-- Price -->
+                                <div class="catalog-card__price">
+                                    {% if product.discount_price %}
+                                        <span>
+                                            Rs. {{ product.price|floatformat:0 }}
+                                        </span>
+                                    {% endif %}
+
+                                    <strong>
+                                        Rs. {{ product.selling_price|floatformat:0 }}
+                                    </strong>
+                                </div>
+
+
+                                <!-- Stock -->
+                                <p class="catalog-card__stock">
+                                    {% if product.stock > 0 or product.has_variant_stock %}
+                                        <i class="is-in-stock"></i>
+                                        In stock
+                                    {% else %}
+                                        <i class="is-out-stock"></i>
+                                        Currently unavailable
+                                    {% endif %}
+                                </p>
+
+
+                                <a
+                                    href="{% url 'products:product_detail' product.slug %}"
+                                    class="catalog-card__button"
+                                >
+                                    View product
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
-    </section>
+
+
+                <!-- ==================================================
+                     PAGINATION
+                =================================================== -->
+
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <nav
+                        class="catalog-pagination"
+                        aria-label="Product pages"
+                    >
+                        {% if page_obj.has_previous %}
+                            <a
+                                href="{% if filter_query %}?{{ filter_query }}&page={{ page_obj.previous_page_number }}{% else %}?page={{ page_obj.previous_page_number }}{% endif %}"
+                                class="catalog-pagination__edge"
+                            >
+                                Previous
+                            </a>
+                        {% else %}
+                            <span class="catalog-pagination__edge is-disabled">
+                                Previous
+                            </span>
+                        {% endif %}
+
+
+                        <div class="catalog-pagination__pages">
+                            {% for page_number in page_obj.paginator.page_range %}
+                                {% if page_number == page_obj.number %}
+                                    <span class="is-current">
+                                        {{ page_number }}
+                                    </span>
+                                {% elif page_number >= page_obj.number|add:"-2" and page_number <= page_obj.number|add:"2" %}
+                                    <a
+                                        href="{% if filter_query %}?{{ filter_query }}&page={{ page_number }}{% else %}?page={{ page_number }}{% endif %}"
+                                    >
+                                        {{ page_number }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+
+                        {% if page_obj.has_next %}
+                            <a
+                                href="{% if filter_query %}?{{ filter_query }}&page={{ page_obj.next_page_number }}{% else %}?page={{ page_obj.next_page_number }}{% endif %}"
+                                class="catalog-pagination__edge"
+                            >
+                                Next
+                            </a>
+                        {% else %}
+                            <span class="catalog-pagination__edge is-disabled">
+                                Next
+                            </span>
+                        {% endif %}
+                    </nav>
+                {% endif %}
+
+            {% else %}
+                <div class="catalog-empty">
+                    <span>
+                        No products found
+                    </span>
+
+                    <h2>
+                        Try a different search or remove some filters.
+                    </h2>
+
+                    <p>
+                        ShopSphere could not find a product matching the current selection.
+                    </p>
+
+                    <a href="{% url 'products:product_list' %}">
+                        View all footwear
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const filters = document.querySelector("#catalogFilters");
+        const openButton = document.querySelector("#catalogFilterButton");
+        const closeButton = document.querySelector("#catalogFilterClose");
+        const backdrop = document.querySelector("#catalogFilterBackdrop");
+
+        const setFilters = (open) => {
+            if (!filters) return;
+
+            filters.classList.toggle("is-open", open);
+            backdrop?.classList.toggle("is-open", open);
+
+            openButton?.setAttribute(
+                "aria-expanded",
+                String(open)
+            );
+
+            document.body.classList.toggle(
+                "catalog-filters-open",
+                open
+            );
+        };
+
+        openButton?.addEventListener(
+            "click",
+            () => setFilters(true)
+        );
+
+        closeButton?.addEventListener(
+            "click",
+            () => setFilters(false)
+        );
+
+        backdrop?.addEventListener(
+            "click",
+            () => setFilters(false)
+        );
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+                if (event.key === "Escape") {
+                    setFilters(false);
+                }
+            }
+        );
+    });
+</script>
 {% endblock %}

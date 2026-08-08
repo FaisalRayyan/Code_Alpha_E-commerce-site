@@ -1,0 +1,38 @@
+SHOPSPHERE CHECKOUT + ORDERS — INSTALL STEPS
+
+1. Extract this ZIP into:
+   C:\Users\User\Documents\GitHub\Code_Alpha_E-commerce-site
+
+2. Choose "Replace files in destination".
+
+3. Check shopsphere/settings.py.
+   In INSTALLED_APPS make sure ONE of these is present:
+       "orders",
+   OR:
+       "orders.apps.OrdersConfig",
+
+   If neither exists, add:
+       "orders",
+
+4. Run:
+       py manage.py check
+       py manage.py makemigrations orders
+       py manage.py migrate
+       py manage.py runserver
+
+5. Test:
+       - Add an in-stock size/color variant to cart
+       - Open /cart/
+       - Continue to Checkout
+       - Fill delivery form
+       - Place COD order
+       - Confirm cart becomes empty
+       - Open /orders/
+       - Open order detail
+       - Test Cancel Order while status is Pending/Confirmed
+
+IMPORTANT:
+- Checkout revalidates product, variant, price and stock server-side.
+- A successful order deducts both variant stock and product stock.
+- Cancelling an eligible order restores both stocks.
+- Cash on Delivery is the only enabled payment method in this phase.

@@ -229,17 +229,16 @@
                         </strong>
                     </div>
 
-                    <button
-                        type="button"
+                    <a
+                        href="{% url 'orders:checkout' %}"
                         class="cart-summary__checkout"
-                        disabled
                     >
                         Continue to Checkout
-                    </button>
+                    </a>
 
                     <p class="cart-summary__note">
-                        Checkout and order processing will be
-                        activated in the upcoming development phase.
+                        Stock and current prices are verified again
+                        before your order is placed.
                     </p>
 
                     <div class="cart-summary__benefits">

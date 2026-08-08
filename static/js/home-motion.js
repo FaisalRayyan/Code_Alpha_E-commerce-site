@@ -24,6 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     gsap.registerPlugin(ScrollTrigger);
 
+    ScrollTrigger.config({
+        ignoreMobileResize: true,
+    });
+
     if (reducedMotion) {
         intro?.remove();
         return;
@@ -64,33 +68,25 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         )
         .from(
-            ".ss-intro__mark-wrap",
+            ".ss-intro__concept-emblem",
             {
                 opacity: 0,
-                scale: 0.42,
-                rotation: -18,
-                duration: 0.85,
-                ease: "back.out(1.7)",
+                scale: 0.46,
+                rotation: -8,
+                filter: "blur(16px)",
+                duration: 1.0,
+                ease: "back.out(1.55)",
             },
             "-=0.2"
         )
-        .from(
-            ".ss-intro__ring",
+        .to(
+            ".ss-intro__concept-emblem",
             {
-                opacity: 0,
-                scale: 0.55,
-                duration: 0.7,
+                scale: 1.025,
+                duration: 0.65,
+                ease: "sine.inOut",
             },
-            "-=0.55"
-        )
-        .from(
-            ".ss-intro__wordmark",
-            {
-                yPercent: 120,
-                duration: 0.9,
-                ease: "power4.out",
-            },
-            "-=0.4"
+            "-=0.28"
         )
         .from(
             ".ss-intro__copy",
@@ -305,16 +301,17 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     gsap.to(
-        ".ss-portal__core",
-        {
-            y: -13,
-            rotation: 2,
-            duration: 2.4,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-        }
-    );
+    ".ss-portal__concept-art",
+    {
+        y: -15,
+        rotation: 1.6,
+        scale: 1.018,
+        duration: 2.8,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+    }
+);
 
 
     /* ==================================
@@ -443,11 +440,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* ==================================
+       STABLE LAYOUT REFRESH
+       Keep native document height in CSS.
+       JavaScript must not keep rewriting
+       section heights while the user scrolls.
+    ================================== */
+
+    const syncHomeMotionLayout = () => {
+        document.documentElement.style.setProperty(
+            "--ss-viewport-height",
+            `${window.innerHeight}px`
+        );
+
+        const storyScrollDistance = Math.round(
+            Math.max(
+                820,
+                Math.min(
+                    1150,
+                    window.innerHeight * 1.15
+                )
+            )
+        );
+
+        document.documentElement.style.setProperty(
+            "--ss-story-scroll",
+            `${storyScrollDistance}px`
+        );
+    };
+
+
+    syncHomeMotionLayout();
+
+
+    /* ==================================
        SCENE 02 — PRODUCT STORY
     ================================== */
 
     const productStory = document.querySelector(
         "#ssProductStory"
+    );
+
+    const storyPanel = productStory?.querySelector(
+        ".ss-product-story__sticky"
     );
 
     const storyShoe = document.querySelector(
@@ -509,6 +543,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
         productStory
+        && storyPanel
         && storyShoe
         && window.innerWidth > 700
     ) {
@@ -518,10 +553,17 @@ document.addEventListener("DOMContentLoaded", () => {
             },
 
             scrollTrigger: {
+                /*
+                   FINAL GAP FIX:
+                   Product Story stays in normal document flow.
+                   No pin = no GSAP pin-spacer = no artificial black gap.
+                */
                 trigger: productStory,
-                start: "top top+=78",
-                end: "bottom bottom",
-                scrub: 1,
+                start: "top 82%",
+                end: "bottom 18%",
+                scrub: 0.65,
+                invalidateOnRefresh: true,
+                fastScrollEnd: true,
 
                 onUpdate: (self) => {
                     const progress = self.progress;
@@ -727,6 +769,14 @@ document.addEventListener("DOMContentLoaded", () => {
         "#ssColorwayUse"
     );
 
+    const colorwayPrice = document.querySelector(
+        "#ssColorwayPrice"
+    );
+
+    const colorwayLink = document.querySelector(
+        "#ssColorwayLink"
+    );
+
     let activeColorway = -1;
 
     const applyColorway = (
@@ -795,6 +845,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 option.dataset.colorwayUse;
         }
 
+        if (
+            colorwayPrice
+            && option.dataset.colorwayPrice
+        ) {
+            colorwayPrice.textContent =
+                option.dataset.colorwayPrice;
+        }
+
+        if (
+            colorwayLink
+            && option.dataset.colorwayUrl
+        ) {
+            colorwayLink.href =
+                option.dataset.colorwayUrl;
+        }
+
         const newImage =
             option.dataset.colorwayImage;
 
@@ -805,7 +871,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!animate) {
             colorwayShoe.src = newImage;
             colorwayShoe.alt =
-                `${option.dataset.colorwayName} ShopSphere shoe`;
+                option.dataset.colorwayName || "ShopSphere product";
             return;
         }
 
@@ -826,7 +892,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .add(() => {
                 colorwayShoe.src = newImage;
                 colorwayShoe.alt =
-                    `${option.dataset.colorwayName} ShopSphere shoe`;
+                    option.dataset.colorwayName || "ShopSphere product";
             })
             .fromTo(
                 colorwayShoe,
@@ -854,6 +920,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 colorwayMood,
                 colorwayFinish,
                 colorwayUse,
+                colorwayPrice,
             ],
             {
                 opacity: 0,
@@ -985,6 +1052,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 trigger: colorwaySection,
                 start: "top 35%",
                 end: "bottom 65%",
+                invalidateOnRefresh: true,
 
                 onUpdate: (self) => {
                     const index = Math.min(
@@ -1167,6 +1235,79 @@ document.addEventListener("DOMContentLoaded", () => {
             .play()
             .catch(() => {
                 heroVideo.style.display = "none";
+                ScrollTrigger.refresh(true);
             });
     }
+
+
+    /* ==================================
+       FINAL LAYOUT REFRESH
+       Refresh once after assets settle.
+       Repeated image-by-image refreshes can
+       make the browser scrollbar jump.
+    ================================== */
+
+    const refreshHomeScroll = () => {
+        syncHomeMotionLayout();
+
+        window.requestAnimationFrame(() => {
+            ScrollTrigger.refresh(true);
+        });
+    };
+
+    const homeImages = Array.from(
+        document.querySelectorAll(".ss-film img")
+    );
+
+    const imageReadyTasks = homeImages.map((image) => {
+        if (image.complete) {
+            return Promise.resolve();
+        }
+
+        return new Promise((resolve) => {
+            const finish = () => resolve();
+
+            image.addEventListener(
+                "load",
+                finish,
+                {
+                    once: true,
+                }
+            );
+
+            image.addEventListener(
+                "error",
+                finish,
+                {
+                    once: true,
+                }
+            );
+        });
+    });
+
+    Promise.all(imageReadyTasks).then(
+        refreshHomeScroll
+    );
+
+    window.addEventListener(
+        "load",
+        refreshHomeScroll,
+        {
+            once: true,
+        }
+    );
+
+    let resizeTimer = null;
+
+    window.addEventListener(
+        "resize",
+        () => {
+            window.clearTimeout(resizeTimer);
+
+            resizeTimer = window.setTimeout(
+                refreshHomeScroll,
+                220
+            );
+        }
+    );
 });
